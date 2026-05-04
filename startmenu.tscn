@@ -1,0 +1,123 @@
+[gd_scene load_steps=8 format=3 uid="uid://doif2l5cfuw7c"]
+
+[ext_resource type="Script" uid="uid://ccq6p87tw5qux" path="res://startmenu.gd" id="1_kj28g"]
+[ext_resource type="Shader" uid="uid://drm3nhpdovppg" path="res://startmenu.gdshader" id="2_kpj2f"]
+[ext_resource type="FontFile" uid="uid://cvjukaggnp2fx" path="res://fonts/PixelOperator8-Bold.ttf" id="2_vv751"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hftdl"]
+shader = ExtResource("2_kpj2f")
+shader_parameter/bg_color = Color(0.01, 0.01, 0.06, 1)
+shader_parameter/star_color = Color(1, 1, 1, 1)
+shader_parameter/speed = 0.03
+shader_parameter/density = 60.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vv751"]
+bg_color = Color(1, 0.8352941, 0.2901961, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kpj2f"]
+bg_color = Color(0.9019608, 0.72156864, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hftdl"]
+bg_color = Color(1, 0.8784314, 0.023529412, 1)
+
+[node name="Startside" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_kj28g")
+
+[node name="Starbackgound" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_hftdl")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.007843138, 0.007843138, 0.05882353, 1)
+
+[node name="ShipTrail1" type="ColorRect" parent="."]
+custom_minimum_size = Vector2(140, 4)
+layout_mode = 0
+offset_top = 1.0
+offset_right = 140.0
+offset_bottom = 41.0
+color = Color(1, 0.9098039, 0.12156863, 1)
+
+[node name="ShipTrail2" type="ColorRect" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="ShipTrail3" type="ColorRect" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="LaserShot" type="ColorRect" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="BackgroundShip1" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -180.0
+offset_right = 100.0
+grow_vertical = 0
+
+[node name="BackgroundShip2" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="BackgroundShip3" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Menubox" type="VBoxContainer" parent="CenterContainer"]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="TitleLabel" type="Label" parent="CenterContainer/Menubox"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_vv751")
+theme_override_font_sizes/font_size = 40
+text = "SPACE INVADERS"
+horizontal_alignment = 1
+
+[node name="StartButton" type="Button" parent="CenterContainer/Menubox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.0018410616, 0.0018410712, 0.0018410641, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("2_vv751")
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxFlat_vv751")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxFlat_kpj2f")
+theme_override_styles/hover = SubResource("StyleBoxFlat_hftdl")
+text = "START"
+
+[node name="CreditsLabel" type="Label" parent="CenterContainer/Menubox"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_vv751")
+theme_override_font_sizes/font_size = 13
+text = "PRODUCED BY TEAM 10"
+horizontal_alignment = 1
