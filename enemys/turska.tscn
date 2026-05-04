@@ -1,6 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://7gvnngnovig5"]
+[gd_scene load_steps=3 format=3 uid="uid://b2syd8mjvex6n"]
 
-[ext_resource type="Texture2D" uid="uid://bmmqnfmsv0ivw" path="res://grafiikka/mustekala.png" id="1_2qvo0"]
+[ext_resource type="Texture2D" uid="uid://bmmqnfmsv0ivw" path="res://grafiikka/mustekala.png" id="1_7e0eh"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6ka4i"]
 size = Vector2(40, 31)
@@ -12,4 +12,4 @@ position = Vector2(0, -0.5)
 shape = SubResource("RectangleShape2D_6ka4i")
 
 [node name="Mustekala" type="Sprite2D" parent="."]
-texture = ExtResource("1_2qvo0")
+texture = ExtResource("1_7e0eh")

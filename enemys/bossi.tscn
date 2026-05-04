@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://v4nwoyfaks2"]
+
+[ext_resource type="Texture2D" uid="uid://ch6ttjap04ht1" path="res://grafiikka/bossi.png" id="1_ed8u6"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6ka4i"]
+size = Vector2(40, 22)
+
+[node name="Alien" type="Area2D" groups=["aliens"]]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_6ka4i")
+
+[node name="Bossi" type="Sprite2D" parent="."]
+texture = ExtResource("1_ed8u6")

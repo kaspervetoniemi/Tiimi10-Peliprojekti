@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://beug60ffxpkdn"]
+
+[ext_resource type="Texture2D" uid="uid://c75upgwgoj7o7" path="res://grafiikka/rapu.png" id="1_83d4s"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6ka4i"]
+size = Vector2(40, 29)
+
+[node name="Alien" type="Area2D" groups=["aliens"]]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 0.5)
+shape = SubResource("RectangleShape2D_6ka4i")
+
+[node name="Rapu" type="Sprite2D" parent="."]
+texture = ExtResource("1_83d4s")
