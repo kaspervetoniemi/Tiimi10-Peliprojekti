@@ -11,5 +11,5 @@ size = Vector2(40, 29)
 position = Vector2(0, 0.5)
 shape = SubResource("RectangleShape2D_6ka4i")
 
-[node name="Rapu" type="Sprite2D" parent="."]
+[node name="Mustekala" type="Sprite2D" parent="."]
 texture = ExtResource("1_83d4s")
