@@ -1,21 +1,20 @@
-[gd_scene load_steps=4 format=3 uid="uid://dgbdt268yye5v"]
+[gd_scene load_steps=5 format=3 uid="uid://dgbdt268yye5v"]
 
 [ext_resource type="Script" uid="uid://c6phqofux0y3d" path="res://player/player.gd" id="1_4flbx"]
 [ext_resource type="PackedScene" uid="uid://baom1pxccia3" path="res://bullet/bullet.tscn" id="2_onrkg"]
+[ext_resource type="Texture2D" uid="uid://0am1018wqfg8" path="res://grafiikka/avaruusalus.png" id="3_g1dw6"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sh265"]
-size = Vector2(40, 16)
+size = Vector2(26, 32)
 
 [node name="Player" type="Area2D"]
 script = ExtResource("1_4flbx")
 bullet_scene = ExtResource("2_onrkg")
 
-[node name="ColorRect" type="ColorRect" parent="."]
-offset_left = -20.0
-offset_top = -8.0
-offset_right = 20.0
-offset_bottom = 8.0
-color = Color(0, 1, 0, 1)
-
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 4)
 shape = SubResource("RectangleShape2D_sh265")
+
+[node name="Avaruusalus" type="Sprite2D" parent="."]
+position = Vector2(0, 4)
+texture = ExtResource("3_g1dw6")
