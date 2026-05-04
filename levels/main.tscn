@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://biwoh4swc430q"]
 
 [ext_resource type="Script" uid="uid://coxht0imgirfe" path="res://levels/main.gd" id="1_l8qe7"]
-[ext_resource type="PackedScene" uid="uid://7gvnngnovig5" path="res://alien/alien.tscn" id="2_m1504"]
+[ext_resource type="PackedScene" uid="uid://7gvnngnovig5" path="res://enemys/rapu.tscn" id="2_m1504"]
 [ext_resource type="PackedScene" uid="uid://dgbdt268yye5v" path="res://player/player.tscn" id="3_ifaiv"]
 
 [node name="main" type="Node2D"]
