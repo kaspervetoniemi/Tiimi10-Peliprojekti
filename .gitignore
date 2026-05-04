@@ -1,17 +1,26 @@
-# Godot 4+ specific ignores
+# Godot cache
 .godot/
 .nomedia
 
-# Godot-specific ignores
+# import tiedostot
 .import/
+*.import
+
+# Exportit
 export.cfg
 export_credentials.cfg
+
+# Temp
 *.tmp
 
-# Imported translations (automatically generated from CSV files)
+# Käännökset
 *.translation
 
-# Mono-specific ignores
+# Mono
 .mono/
 data_*/
 mono_crash.*.json
+
+# OS
+.DS_Store
+Thumbs.db
