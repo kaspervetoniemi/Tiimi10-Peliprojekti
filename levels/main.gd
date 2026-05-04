@@ -4,6 +4,9 @@ extends Node2D
 var alien_direction = 1
 var alien_speed = 50
 
+var bg_music = preload("res://sounds/backgroundmusic.wav") # Update with your file's name!
+var music_player = AudioStreamPlayer.new()
+
 func _ready():
 	# Spawn a 10x4 grid of aliens when the game starts
 	for row in range(4):
@@ -12,6 +15,13 @@ func _ready():
 			# Space them out nicely
 			alien.position = Vector2(col * 60 + 100, row * 40 + 50) 
 			add_child(alien)
+	
+	music_player.stream = bg_music
+	
+	music_player.volume_db = -15.0 
+	
+	add_child(music_player)
+	music_player.play()
 
 func _process(delta):
 	var aliens = get_tree().get_nodes_in_group("aliens")
