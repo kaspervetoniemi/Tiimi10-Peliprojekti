@@ -15,4 +15,6 @@ export_credentials.cfg
 .mono/
 data_*/
 mono_crash.*.json
-sounds/laser.wav.import
+
+# Godot import files
+*.import
