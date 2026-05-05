@@ -1,15 +1,18 @@
 shader_type canvas_item;
 
-uniform vec4 bg_color_top : source_color = vec4(0.01, 0.01, 0.08, 1.0);
-uniform vec4 bg_color_bottom : source_color = vec4(0.03, 0.00, 0.08, 1.0);
+uniform vec4 bg_color_top : source_color = vec4(0.01, 0.01, 0.07, 1.0);
+uniform vec4 bg_color_bottom : source_color = vec4(0.01, 0.02, 0.05, 1.0);
 
 uniform vec4 star_color : source_color = vec4(1.0, 1.0, 1.0, 1.0);
-uniform vec4 blue_star_color : source_color = vec4(0.45, 0.75, 1.0, 1.0);
-uniform vec4 purple_glow_color : source_color = vec4(0.35, 0.08, 0.65, 1.0);
+uniform vec4 blue_star_color : source_color = vec4(0.55, 0.78, 1.0, 1.0);
+
+// Vihertävä sumu
+uniform vec4 green_glow_color : source_color = vec4(0.18, 0.55, 0.30, 1.0);
+uniform vec4 green_glow_color_2 : source_color = vec4(0.05, 0.22, 0.14, 1.0);
 
 uniform float speed = 0.03;
 uniform float density = 60.0;
-uniform float glow_strength = 0.18;
+uniform float glow_strength = 0.22;
 
 float rand(vec2 co) {
 	return fract(sin(dot(co, vec2(12.9898, 78.233))) * 43758.5453);
@@ -26,9 +29,9 @@ float noise(vec2 p) {
 
 	vec2 u = f * f * (3.0 - 2.0 * f);
 
-	return mix(a, b, u.x) +
-		(c - a) * u.y * (1.0 - u.x) +
-		(d - b) * u.x * u.y;
+	return mix(a, b, u.x)
+		+ (c - a) * u.y * (1.0 - u.x)
+		+ (d - b) * u.x * u.y;
 }
 
 float fbm(vec2 p) {
@@ -47,11 +50,12 @@ float fbm(vec2 p) {
 void fragment() {
 	vec2 uv = UV;
 
+	// Tumma tausta
 	vec3 col = mix(bg_color_top.rgb, bg_color_bottom.rgb, uv.y);
 
-	// Pehmeä mutta näkyvämpi sumu
+	// Vihertävä sumu
 	vec2 nebula_uv = uv * 2.2;
-	nebula_uv += vec2(TIME * 0.01, TIME * 0.005);
+	nebula_uv += vec2(TIME * 0.010, TIME * 0.005);
 
 	float n1 = fbm(nebula_uv);
 	float n2 = fbm(nebula_uv * 1.7 + vec2(4.2, 2.7));
@@ -61,13 +65,14 @@ void fragment() {
 	nebula = smoothstep(0.42, 0.82, nebula);
 
 	vec3 nebula_color = mix(
-		purple_glow_color.rgb,
-		vec3(0.05, 0.25, 0.65),
+		green_glow_color.rgb,
+		green_glow_color_2.rgb,
 		uv.x
 	);
 
-	col += nebula_color * nebula * glow_strength * 0.9;
+	col += nebula_color * nebula * glow_strength;
 
+	// Vilkkuvat tähdet
 	float stars = 0.0;
 	float blue_stars = 0.0;
 

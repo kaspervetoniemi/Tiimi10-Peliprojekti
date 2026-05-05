@@ -1,14 +1,21 @@
-[gd_scene load_steps=6 format=3 uid="uid://biwoh4swc430q"]
+[gd_scene load_steps=7 format=3 uid="uid://biwoh4swc430q"]
 
 [ext_resource type="Script" uid="uid://coxht0imgirfe" path="res://levels/main.gd" id="1_l8qe7"]
 [ext_resource type="PackedScene" uid="uid://b2syd8mjvex6n" path="res://enemys/turska.tscn" id="2_l8qe7"]
+[ext_resource type="PackedScene" uid="uid://7gvnngnovig5" path="res://enemys/rapu.tscn" id="2_m1504"]
+[ext_resource type="PackedScene" uid="uid://c3nf5w5ubh41j" path="res://Scenes/star_background.tscn" id="3_5k4jt"]
 [ext_resource type="PackedScene" uid="uid://dgbdt268yye5v" path="res://player/player.tscn" id="3_ifaiv"]
-[ext_resource type="FontFile" uid="uid://b7q1p1hbudn0t" path="res://fonts/PixelOperator8-Bold.ttf" id="4_ifaiv"]
-[ext_resource type="Script" uid="uid://q10jvohbnlaa" path="res://levels/label.gd" id="5_5k4jt"]
+[ext_resource type="FontFile" uid="uid://cvjukaggnp2fx" path="res://fonts/PixelOperator8-Bold.ttf" id="4_ifaiv"]
+[ext_resource type="Script" path="res://levels/label.gd" id="5_5k4jt"]
 
 [node name="main" type="Node2D"]
 script = ExtResource("1_l8qe7")
 alien_scene = ExtResource("2_l8qe7")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = -10
+
+[node name="StarBackground" parent="CanvasLayer" instance=ExtResource("3_5k4jt")]
 
 [node name="Player" parent="." instance=ExtResource("3_ifaiv")]
 position = Vector2(575, 636)
