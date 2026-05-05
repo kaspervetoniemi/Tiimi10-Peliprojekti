@@ -11,6 +11,10 @@ config_version=5
 [application]
 
 config/name="Ilari-A-Space-Invaders-Testi"
-run/main_scene="uid://biwoh4swc430q"
+run/main_scene="uid://doif2l5cfuw7c"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+Global="*res://global.gd"
