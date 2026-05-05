@@ -8,6 +8,10 @@ extends Control
 
 @onready var laser_shot: ColorRect = $LaserShot
 
+@onready var enemy_1: TextureRect = $Enemy1
+@onready var enemy_2: TextureRect = $Enemy2
+@onready var enemy_3: TextureRect = $Enemy3
+
 @onready var background_ships: Array[TextureRect] = [
 	$BackgroundShip1,
 	$BackgroundShip2,
@@ -32,10 +36,12 @@ func _ready() -> void:
 
 	_setup_background_effects()
 	_setup_laser()
+	_setup_enemies()
 
 	_animate_menu_texts()
 	_start_ship_animations()
 	_start_laser_loop()
+	_animate_enemies()
 
 
 func _on_start_pressed() -> void:
@@ -136,15 +142,19 @@ func _setup_background_effects() -> void:
 		ship.size = Vector2(96, 48)
 		ship.pivot_offset = Vector2(48, 24)
 
-		ship.modulate = Color(1, 1, 1, 0.45)
+		# Aluksi piiloon ja pois ruudulta, ettei mikään jää vasempaan yläkulmaan.
+		ship.position = Vector2(-300, -300)
+		ship.modulate = Color(1, 1, 1, 0.0)
 
 	for trail in ship_trails:
 		trail.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		trail.set_anchors_preset(Control.PRESET_TOP_LEFT)
 
 		trail.color = Color("#F7FBFF")
-		trail.size = Vector2(130, 2)
-		trail.pivot_offset = Vector2(65, 1)
+		trail.size = Vector2(90, 1.5)
+		trail.pivot_offset = Vector2(45, 0.75)
+
+		trail.position = Vector2(-300, -300)
 		trail.modulate = Color(0.92, 0.97, 1.0, 0.0)
 
 
@@ -186,35 +196,48 @@ func _fly_ship_loop(ship: TextureRect, trail: ColorRect, delay: float) -> void:
 	while true:
 		var screen_size := get_viewport_rect().size
 
-		var y := randf_range(70.0, screen_size.y - 70.0)
-		var start_pos := Vector2(-180.0, y)
-		var end_pos := Vector2(screen_size.x + 180.0, y + randf_range(-25.0, 25.0))
+		var start_y := randf_range(70.0, screen_size.y - 70.0)
+		var end_y := start_y + randf_range(-20.0, 20.0)
+
+		var ship_start := Vector2(-140.0, start_y)
+		var ship_end := Vector2(screen_size.x + 140.0, end_y)
+
 		var duration := randf_range(3.2, 4.8)
 
-		# Alus on trailin edellä.
-		ship.position = start_pos + Vector2(130.0, -24.0)
-		ship.rotation = deg_to_rad(randf_range(-2.0, 2.0))
-		ship.modulate = Color(1, 1, 1, 0.45)
+		# Alus
+		ship.position = ship_start
+		ship.rotation = 0.0
+		ship.modulate = Color(1, 1, 1, 0.30)
 
-		trail.position = start_pos
-		trail.rotation = ship.rotation
-		trail.size = Vector2(130.0, 2.0)
+		# Trail aluksen taakse.
+		var trail_offset := Vector2(-80.0, 22.0)
+
+		trail.position = ship.position + trail_offset
+		trail.rotation = 0.0
+		trail.size = Vector2(80.0, 1.5)
 		trail.color = Color("#F7FBFF")
-		trail.modulate = Color(0.92, 0.97, 1.0, 0.14)
+		trail.modulate = Color(0.92, 0.97, 1.0, 0.12)
 
 		var move_tween := create_tween()
 		move_tween.set_parallel(true)
 		move_tween.set_trans(Tween.TRANS_SINE)
 		move_tween.set_ease(Tween.EASE_IN_OUT)
 
-		move_tween.tween_property(ship, "position", end_pos + Vector2(130.0, -24.0), duration)
-		move_tween.tween_property(trail, "position", end_pos, duration)
+		move_tween.tween_property(ship, "position", ship_end, duration)
+		move_tween.tween_property(trail, "position", ship_end + trail_offset, duration)
 
 		var fade_tween := create_tween()
 		fade_tween.tween_interval(duration * 0.75)
 		fade_tween.tween_property(trail, "modulate", Color(0.92, 0.97, 1.0, 0.0), 0.7)
 
 		await move_tween.finished
+
+		ship.position = Vector2(-300, -300)
+		ship.modulate = Color(1, 1, 1, 0.0)
+
+		trail.position = Vector2(-300, -300)
+		trail.modulate = Color(0.92, 0.97, 1.0, 0.0)
+
 		await get_tree().create_timer(randf_range(1.4, 3.0)).timeout
 
 
@@ -248,4 +271,98 @@ func _laser_loop() -> void:
 
 		# Laserin tahti
 		await tween.finished
-		await get_tree().create_timer(randf_range(0.25, 0.8)).timeout
+		await get_tree().create_timer(randf_range(0.8, 0.35)).timeout
+
+func _setup_enemies() -> void:
+	enemy_1.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	enemy_2.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	enemy_3.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	enemy_1.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	enemy_2.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	enemy_3.set_anchors_preset(Control.PRESET_TOP_LEFT)
+
+	enemy_1.size = Vector2(20, 15)
+	enemy_2.size = Vector2(20, 15)
+	enemy_3.size = Vector2(20, 15)
+
+	enemy_1.pivot_offset = enemy_1.size / 2
+	enemy_2.pivot_offset = enemy_2.size / 2
+	enemy_3.pivot_offset = enemy_3.size / 2
+
+	var screen_size := get_viewport_rect().size
+
+	enemy_1.position = Vector2(screen_size.x / 2 - 220, 208)
+	enemy_2.position = Vector2(screen_size.x / 2 + 70, 209)
+
+	# Vihollinen credits-tekstin yläpuolelle
+	enemy_3.position = Vector2(screen_size.x / 2 - 10, 355)
+
+	enemy_1.modulate = Color(1, 1, 1, 0.75)
+	enemy_2.modulate = Color(1, 1, 1, 0.75)
+	enemy_3.modulate = Color(1, 1, 1, 0.75)
+
+
+func _animate_enemies() -> void:
+	_animate_top_enemies()
+	_animate_credit_enemy()
+
+
+func _animate_top_enemies() -> void:
+	var enemy_1_start := enemy_1.position
+	var enemy_2_start := enemy_2.position
+
+	var tween := create_tween()
+	tween.set_loops()
+	tween.set_trans(Tween.TRANS_SINE)
+	tween.set_ease(Tween.EASE_IN_OUT)
+
+	while true:
+		tween = create_tween()
+		tween.set_parallel(true)
+		tween.set_trans(Tween.TRANS_SINE)
+		tween.set_ease(Tween.EASE_IN_OUT)
+
+		tween.tween_property(enemy_1, "position", enemy_1_start + Vector2(110, 0), 7.9)
+		tween.tween_property(enemy_2, "position", enemy_2_start + Vector2(150, 0), 8.9)
+
+		await tween.finished
+
+		tween = create_tween()
+		tween.set_parallel(true)
+		tween.set_trans(Tween.TRANS_SINE)
+		tween.set_ease(Tween.EASE_IN_OUT)
+
+		tween.tween_property(enemy_1, "position", enemy_1_start, 8.9)
+		tween.tween_property(enemy_2, "position", enemy_2_start, 6.9)
+
+		await tween.finished
+
+
+func _animate_credit_enemy() -> void:
+	var enemy_3_start := enemy_3.position
+
+	while true:
+		var tween := create_tween()
+		tween.set_trans(Tween.TRANS_SINE)
+		tween.set_ease(Tween.EASE_IN_OUT)
+
+		tween.tween_property(enemy_3, "position", enemy_3_start + Vector2(90, 0), 5.0)
+
+		await tween.finished
+
+		tween = create_tween()
+		tween.set_trans(Tween.TRANS_SINE)
+		tween.set_ease(Tween.EASE_IN_OUT)
+
+		tween.tween_property(enemy_3, "position", enemy_3_start + Vector2(-80, 0), 8.0)
+
+		await tween.finished
+
+		tween = create_tween()
+		tween.set_trans(Tween.TRANS_SINE)
+		tween.set_ease(Tween.EASE_IN_OUT)
+
+		tween.tween_property(enemy_3, "position", enemy_3_start, 9.0)
+
+		await tween.finished

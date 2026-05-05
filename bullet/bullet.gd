@@ -24,19 +24,23 @@ func _process(delta):
 
 func _on_area_entered(area):
 	if area.is_in_group("aliens"):
-		# 1. Destroy the alien instantly
-		area.queue_free() 
 		
-		# 2. Turn on our safety flag so the bullet stops moving up
+		if area.has_method("death"):
+			area.death()
+		else:
+			area.queue_free()
+
+		Global.score += 10
+		print("Score is now: ", Global.score)
+		# ------------------------------------------------
+
 		is_exploding = true
-		
-		# 3. Make the bullet invisible
+
 		hide()
-		
-		# 4. Turn off the bullet's collision
+
 		$CollisionShape2D.set_deferred("disabled", true)
-		
-		# 5. Play the sound
+
 		audio_player.play(1.0)
 		await audio_player.finished
 		queue_free()
+		
