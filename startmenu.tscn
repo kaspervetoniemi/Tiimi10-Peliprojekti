@@ -1,12 +1,13 @@
-[gd_scene load_steps=12 format=3 uid="uid://doif2l5cfuw7c"]
+[gd_scene load_steps=13 format=3 uid="uid://doif2l5cfuw7c"]
 
 [ext_resource type="Script" uid="uid://ccq6p87tw5qux" path="res://startmenu.gd" id="1_kj28g"]
 [ext_resource type="Shader" uid="uid://drm3nhpdovppg" path="res://startmenu.gdshader" id="2_kpj2f"]
-[ext_resource type="FontFile" uid="uid://cvjukaggnp2fx" path="res://fonts/PixelOperator8-Bold.ttf" id="2_vv751"]
+[ext_resource type="FontFile" uid="uid://b7q1p1hbudn0t" path="res://fonts/PixelOperator8-Bold.ttf" id="2_vv751"]
 [ext_resource type="Texture2D" uid="uid://tpgxuvxm6a5" path="res://grafiikka/avaruusalus-side.png" id="3_kpj2f"]
 [ext_resource type="Texture2D" uid="uid://bmmqnfmsv0ivw" path="res://grafiikka/mustekala.png" id="4_fopwh"]
 [ext_resource type="Texture2D" uid="uid://dkcagtbrec6pw" path="res://grafiikka/turska.png" id="5_qhhne"]
 [ext_resource type="Texture2D" uid="uid://c75upgwgoj7o7" path="res://grafiikka/rapu.png" id="6_qhhne"]
+[ext_resource type="AudioStream" uid="uid://cwvnibqpw2oef" path="res://sounds/mainmenutheme.wav" id="8_j1r8h"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_hftdl"]
 shader = ExtResource("2_kpj2f")
@@ -145,3 +146,8 @@ theme_override_fonts/font = ExtResource("2_vv751")
 theme_override_font_sizes/font_size = 13
 text = "PRODUCED BY TEAM 10"
 horizontal_alignment = 1
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("8_j1r8h")
+volume_db = -17.174
+autoplay = true
