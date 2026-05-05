@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://c3nf5w5ubh41j"]
+
+[ext_resource type="Shader" uid="uid://dah3ijtq80w2f" path="res://Scenes/star_background.gdshader" id="1_s7x78"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_pjt66"]
+render_priority = 0
+shader = ExtResource("1_s7x78")
+
+[node name="StarBackground" type="ColorRect"]
+material = SubResource("ShaderMaterial_pjt66")
+use_parent_material = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0.105882354, 1)
