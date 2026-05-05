@@ -136,7 +136,7 @@ func _setup_background_effects() -> void:
 		ship.size = Vector2(96, 48)
 		ship.pivot_offset = Vector2(48, 24)
 
-		ship.modulate = Color(1, 1, 1, 0.0)
+		ship.modulate = Color(1, 1, 1, 0.45)
 
 	for trail in ship_trails:
 		trail.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -194,7 +194,7 @@ func _fly_ship_loop(ship: TextureRect, trail: ColorRect, delay: float) -> void:
 		# Alus on trailin edellä.
 		ship.position = start_pos + Vector2(130.0, -24.0)
 		ship.rotation = deg_to_rad(randf_range(-2.0, 2.0))
-		ship.modulate = Color(1, 1, 1, 0.0)
+		ship.modulate = Color(1, 1, 1, 0.45)
 
 		trail.position = start_pos
 		trail.rotation = ship.rotation
