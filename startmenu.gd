@@ -5,6 +5,7 @@ extends Control
 @onready var start_button: Button = $CenterContainer/Menubox/StartButton
 @onready var title_label: Label = $CenterContainer/Menubox/TitleLabel
 @onready var credits_label: Label = $CenterContainer/Menubox/CreditsLabel
+@onready var scene_transition = get_node_or_null("/root/SceneTransition")
 
 @onready var laser_shot: ColorRect = $LaserShot
 
@@ -45,7 +46,10 @@ func _ready() -> void:
 
 
 func _on_start_pressed() -> void:
-	get_tree().change_scene_to_file(game_scene_path)
+	if scene_transition != null and scene_transition.has_method("transition_to_scene"):
+		scene_transition.transition_to_scene(game_scene_path)
+	else:
+		get_tree().change_scene_to_file(game_scene_path)
 
 
 func _style_title() -> void:

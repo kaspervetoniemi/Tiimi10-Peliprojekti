@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://biwoh4swc430q"]
+[gd_scene load_steps=9 format=3 uid="uid://biwoh4swc430q"]
 
 [ext_resource type="Script" uid="uid://coxht0imgirfe" path="res://levels/main.gd" id="1_l8qe7"]
 [ext_resource type="PackedScene" uid="uid://7gvnngnovig5" path="res://enemys/rapu.tscn" id="2_m1504"]
@@ -6,6 +6,8 @@
 [ext_resource type="PackedScene" uid="uid://dgbdt268yye5v" path="res://player/player.tscn" id="3_ifaiv"]
 [ext_resource type="FontFile" uid="uid://cvjukaggnp2fx" path="res://fonts/PixelOperator8-Bold.ttf" id="4_ifaiv"]
 [ext_resource type="Script" path="res://levels/label.gd" id="5_5k4jt"]
+[ext_resource type="PackedScene" uid="uid://b22u24ixvl1d2" path="res://Scenes/scene_transition.tscn" id="7_6et1j"]
+[ext_resource type="Script" uid="uid://db8khieiw3uuj" path="res://Scenes/scene_transition.gd" id="8_etqu2"]
 
 [node name="main" type="Node2D"]
 script = ExtResource("1_l8qe7")
@@ -26,3 +28,15 @@ theme_override_colors/font_color = Color(0, 1, 0, 1)
 theme_override_fonts/font = ExtResource("4_ifaiv")
 text = "Score: 0"
 script = ExtResource("5_5k4jt")
+
+[node name="SceneTransition" parent="." instance=ExtResource("7_6et1j")]
+script = ExtResource("8_etqu2")
+
+[node name="FadeRect" type="ColorRect" parent="SceneTransition"]
+modulate = Color(0.5921569, 0.5921569, 0.5921569, 0)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)

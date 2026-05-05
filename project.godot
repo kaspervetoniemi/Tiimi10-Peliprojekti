@@ -18,3 +18,4 @@ config/icon="res://icon.svg"
 [autoload]
 
 Global="*res://Koodi/global.gd"
+SceneTransition="*res://Scenes/scene_transition.tscn"

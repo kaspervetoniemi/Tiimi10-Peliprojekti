@@ -1,9 +1,9 @@
-[gd_scene load_steps=13 format=3 uid="uid://doif2l5cfuw7c"]
+[gd_scene load_steps=14 format=3 uid="uid://doif2l5cfuw7c"]
 
 [ext_resource type="Script" uid="uid://ccq6p87tw5qux" path="res://startmenu.gd" id="1_kj28g"]
 [ext_resource type="Shader" uid="uid://drm3nhpdovppg" path="res://startmenu.gdshader" id="2_kpj2f"]
-[ext_resource type="FontFile" uid="uid://b7q1p1hbudn0t" path="res://fonts/PixelOperator8-Bold.ttf" id="2_vv751"]
-[ext_resource type="Texture2D" uid="uid://gkf4ktva3flg" path="res://grafiikka/avaruusalus-side.png" id="3_kpj2f"]
+[ext_resource type="FontFile" uid="uid://cvjukaggnp2fx" path="res://fonts/PixelOperator8-Bold.ttf" id="2_vv751"]
+[ext_resource type="Texture2D" uid="uid://tpgxuvxm6a5" path="res://grafiikka/avaruusalus-side.png" id="3_kpj2f"]
 [ext_resource type="Texture2D" uid="uid://bmmqnfmsv0ivw" path="res://grafiikka/mustekala.png" id="4_fopwh"]
 [ext_resource type="Texture2D" uid="uid://dkcagtbrec6pw" path="res://grafiikka/turska.png" id="5_qhhne"]
 [ext_resource type="Texture2D" uid="uid://c75upgwgoj7o7" path="res://grafiikka/rapu.png" id="6_qhhne"]
@@ -11,10 +11,16 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_hftdl"]
 shader = ExtResource("2_kpj2f")
-shader_parameter/bg_color = Color(0.01, 0.01, 0.06, 1)
+shader_parameter/bg_color_top = Color(0.01, 0.01, 0.08, 1)
+shader_parameter/bg_color_bottom = Color(0.03, 0, 0.08, 1)
 shader_parameter/star_color = Color(1, 1, 1, 1)
+shader_parameter/blue_star_color = Color(0.45, 0.75, 1, 1)
+shader_parameter/purple_glow_color = Color(0.35, 0.08, 0.65, 1)
 shader_parameter/speed = 0.03
 shader_parameter/density = 60.0
+shader_parameter/glow_strength = 0.18
+
+[sub_resource type="GDScript" id="GDScript_pjerj"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vv751"]
 bg_color = Color(1, 0.8352941, 0.2901961, 1)
@@ -43,6 +49,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.007843138, 0.007843138, 0.05882353, 1)
+script = SubResource("GDScript_pjerj")
 
 [node name="ShipTrail1" type="ColorRect" parent="."]
 layout_mode = 0
