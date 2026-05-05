@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://7gvnngnovig5"]
+[gd_scene load_steps=6 format=3 uid="uid://7gvnngnovig5"]
 
-[ext_resource type="Script" uid="uid://ctjsrhwwyri8b" path="res://Koodi/enemydestruction.gd" id="1_pabt8"]
+[ext_resource type="Script" uid="uid://ctjsrhwwyri8b" path="res://Koodi/enemylogic.gd" id="1_pabt8"]
 [ext_resource type="Texture2D" uid="uid://c08bb51mneakp" path="res://grafiikka/destruction.png" id="1_y4qjl"]
+[ext_resource type="PackedScene" uid="uid://dr6d7eg77qxr3" path="res://bullet/enemy_bullet.tscn" id="2_pabt8"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6ka4i"]
 size = Vector2(40, 31)
@@ -11,6 +12,7 @@ load_path = "res://.godot/imported/mustekala.png-9f76f19a3aa5174c06fb599927420c0
 
 [node name="Alien" type="Area2D" groups=["aliens"]]
 script = ExtResource("1_pabt8")
+ammus_skene = ExtResource("2_pabt8")
 death_screen = ExtResource("1_y4qjl")
 
 [node name="Destruction" type="Sprite2D" parent="."]
