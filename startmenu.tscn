@@ -1,9 +1,12 @@
-[gd_scene load_steps=9 format=3 uid="uid://doif2l5cfuw7c"]
+[gd_scene load_steps=12 format=3 uid="uid://doif2l5cfuw7c"]
 
 [ext_resource type="Script" uid="uid://ccq6p87tw5qux" path="res://startmenu.gd" id="1_kj28g"]
 [ext_resource type="Shader" uid="uid://drm3nhpdovppg" path="res://startmenu.gdshader" id="2_kpj2f"]
-[ext_resource type="FontFile" uid="uid://b7q1p1hbudn0t" path="res://fonts/PixelOperator8-Bold.ttf" id="2_vv751"]
-[ext_resource type="Texture2D" uid="uid://gkf4ktva3flg" path="res://grafiikka/avaruusalus-side.png" id="3_kpj2f"]
+[ext_resource type="FontFile" uid="uid://cvjukaggnp2fx" path="res://fonts/PixelOperator8-Bold.ttf" id="2_vv751"]
+[ext_resource type="Texture2D" uid="uid://tpgxuvxm6a5" path="res://grafiikka/avaruusalus-side.png" id="3_kpj2f"]
+[ext_resource type="Texture2D" uid="uid://bmmqnfmsv0ivw" path="res://grafiikka/mustekala.png" id="4_fopwh"]
+[ext_resource type="Texture2D" uid="uid://dkcagtbrec6pw" path="res://grafiikka/turska.png" id="5_qhhne"]
+[ext_resource type="Texture2D" uid="uid://c75upgwgoj7o7" path="res://grafiikka/rapu.png" id="6_qhhne"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_hftdl"]
 shader = ExtResource("2_kpj2f")
@@ -41,7 +44,6 @@ grow_vertical = 2
 color = Color(0.007843138, 0.007843138, 0.05882353, 1)
 
 [node name="ShipTrail1" type="ColorRect" parent="."]
-custom_minimum_size = Vector2(140, 4)
 layout_mode = 0
 offset_top = 1.0
 offset_right = 140.0
@@ -85,6 +87,24 @@ layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 texture = ExtResource("3_kpj2f")
+
+[node name="Enemy1" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("4_fopwh")
+
+[node name="Enemy2" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("5_qhhne")
+
+[node name="Enemy3" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("6_qhhne")
 
 [node name="CenterContainer" type="CenterContainer" parent="."]
 layout_mode = 1
