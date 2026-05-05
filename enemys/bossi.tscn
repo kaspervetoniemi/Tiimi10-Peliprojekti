@@ -1,16 +1,22 @@
-[gd_scene load_steps=4 format=3 uid="uid://v4nwoyfaks2"]
+[gd_scene load_steps=5 format=3 uid="uid://v4nwoyfaks2"]
 
-[ext_resource type="Texture2D" uid="uid://ch6ttjap04ht1" path="res://grafiikka/bossi.png" id="1_ed8u6"]
 [ext_resource type="Script" uid="uid://ctjsrhwwyri8b" path="res://Koodi/enemydestruction.gd" id="1_ojjgi"]
+[ext_resource type="Texture2D" uid="uid://c08bb51mneakp" path="res://grafiikka/destruction.png" id="2_5illw"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6ka4i"]
 size = Vector2(40, 22)
 
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_ojjgi"]
+load_path = "res://.godot/imported/bossi.png-27b355302e3e090288f4a53464ce2299.ctex"
+
 [node name="Alien" type="Area2D" groups=["aliens"]]
 script = ExtResource("1_ojjgi")
+death_screen = ExtResource("2_5illw")
+
+[node name="Destruction" type="Sprite2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_6ka4i")
 
 [node name="Bossi" type="Sprite2D" parent="."]
-texture = ExtResource("1_ed8u6")
+texture = SubResource("CompressedTexture2D_ojjgi")

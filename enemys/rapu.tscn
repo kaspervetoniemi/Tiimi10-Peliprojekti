@@ -1,11 +1,13 @@
 [gd_scene load_steps=5 format=3 uid="uid://7gvnngnovig5"]
 
-[ext_resource type="Texture2D" uid="uid://bmmqnfmsv0ivw" path="res://grafiikka/mustekala.png" id="1_2qvo0"]
 [ext_resource type="Script" uid="uid://ctjsrhwwyri8b" path="res://Koodi/enemydestruction.gd" id="1_pabt8"]
 [ext_resource type="Texture2D" uid="uid://c08bb51mneakp" path="res://grafiikka/destruction.png" id="1_y4qjl"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6ka4i"]
 size = Vector2(40, 31)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_y4qjl"]
+load_path = "res://.godot/imported/mustekala.png-9f76f19a3aa5174c06fb599927420c0f.ctex"
 
 [node name="Alien" type="Area2D" groups=["aliens"]]
 script = ExtResource("1_pabt8")
@@ -20,4 +22,4 @@ position = Vector2(0, -0.5)
 shape = SubResource("RectangleShape2D_6ka4i")
 
 [node name="Rapu" type="Sprite2D" parent="."]
-texture = ExtResource("1_2qvo0")
+texture = SubResource("CompressedTexture2D_y4qjl")
