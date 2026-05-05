@@ -1,6 +1,7 @@
 extends Area2D
 
 @export var ammus_skene: PackedScene
+@export var destruction_texture : Texture2D
 
 func _on_timer_timeout():
 	# randf() arpoo luvun 0 ja 1 väliltä. 
@@ -21,3 +22,16 @@ func _ready():
 	# Ampumisrytmin sekoitus
 	ajastin.wait_time = randf_range(1.5, 6.0)
 	ajastin.start()
+	
+func tuhoa_vihollinen():
+	# Pysäytetään ampuminen
+	$Timer.stop()
+	
+	# Vaihdetaan turskan kuva räjähdykseksi
+	# Varmista, että Sprite-noden nimi on "Turska"
+	if has_node("Turska"):
+		$Turska.texture = destruction_texture
+	
+	# Odotetaan pieni hetki ja poistetaan vihollinen
+	await get_tree().create_timer(0.2).timeout
+	queue_free()
