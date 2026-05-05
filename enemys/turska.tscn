@@ -1,11 +1,13 @@
-[gd_scene load_steps=3 format=3 uid="uid://b2syd8mjvex6n"]
+[gd_scene load_steps=4 format=3 uid="uid://b2syd8mjvex6n"]
 
 [ext_resource type="Texture2D" uid="uid://bmmqnfmsv0ivw" path="res://grafiikka/mustekala.png" id="1_7e0eh"]
+[ext_resource type="Script" uid="uid://ctjsrhwwyri8b" path="res://Koodi/enemydestruction.gd" id="1_tg4mw"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6ka4i"]
 size = Vector2(40, 31)
 
 [node name="Alien" type="Area2D" groups=["aliens"]]
+script = ExtResource("1_tg4mw")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -0.5)
