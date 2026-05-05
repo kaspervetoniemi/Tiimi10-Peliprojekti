@@ -1,6 +1,7 @@
 [gd_scene load_steps=9 format=3 uid="uid://biwoh4swc430q"]
 
 [ext_resource type="Script" uid="uid://coxht0imgirfe" path="res://levels/main.gd" id="1_l8qe7"]
+[ext_resource type="PackedScene" uid="uid://b2syd8mjvex6n" path="res://enemys/turska.tscn" id="2_l8qe7"]
 [ext_resource type="PackedScene" uid="uid://7gvnngnovig5" path="res://enemys/rapu.tscn" id="2_m1504"]
 [ext_resource type="PackedScene" uid="uid://c3nf5w5ubh41j" path="res://Scenes/star_background.tscn" id="3_5k4jt"]
 [ext_resource type="PackedScene" uid="uid://dgbdt268yye5v" path="res://player/player.tscn" id="3_ifaiv"]
@@ -11,7 +12,7 @@
 
 [node name="main" type="Node2D"]
 script = ExtResource("1_l8qe7")
-alien_scene = ExtResource("2_m1504")
+alien_scene = ExtResource("2_l8qe7")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 layer = -10

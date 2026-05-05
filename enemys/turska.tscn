@@ -1,23 +1,27 @@
-[gd_scene load_steps=5 format=3 uid="uid://b2syd8mjvex6n"]
+[gd_scene load_steps=6 format=3 uid="uid://b2syd8mjvex6n"]
 
-[ext_resource type="Script" uid="uid://ctjsrhwwyri8b" path="res://Koodi/enemydestruction.gd" id="1_tg4mw"]
+[ext_resource type="Script" uid="uid://b4qaqmduwqs0w" path="res://enemys/turska.gd" id="1_0hl8c"]
 [ext_resource type="Texture2D" uid="uid://c08bb51mneakp" path="res://grafiikka/destruction.png" id="2_0hl8c"]
+[ext_resource type="Texture2D" uid="uid://bmmqnfmsv0ivw" path="res://grafiikka/mustekala.png" id="2_7e0eh"]
+[ext_resource type="PackedScene" uid="uid://dr6d7eg77qxr3" path="res://bullet/enemy_bullet.tscn" id="2_g7cty"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6ka4i"]
 size = Vector2(40, 31)
 
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_tg4mw"]
-load_path = "res://.godot/imported/mustekala.png-9f76f19a3aa5174c06fb599927420c0f.ctex"
-
 [node name="Alien" type="Area2D" groups=["aliens"]]
-script = ExtResource("1_tg4mw")
-death_screen = ExtResource("2_0hl8c")
-
-[node name="Destruction" type="Sprite2D" parent="."]
+script = ExtResource("1_0hl8c")
+ammus_skene = ExtResource("2_g7cty")
+destruction_texture = ExtResource("2_0hl8c")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -0.5)
 shape = SubResource("RectangleShape2D_6ka4i")
 
 [node name="Turska" type="Sprite2D" parent="."]
-texture = SubResource("CompressedTexture2D_tg4mw")
+texture = ExtResource("2_7e0eh")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 2.0
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
