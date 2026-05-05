@@ -1,11 +1,15 @@
-[gd_scene load_steps=3 format=3 uid="uid://b2syd8mjvex6n"]
+[gd_scene load_steps=5 format=3 uid="uid://b2syd8mjvex6n"]
 
+[ext_resource type="Script" uid="uid://b4qaqmduwqs0w" path="res://enemys/turska.gd" id="1_0hl8c"]
 [ext_resource type="Texture2D" uid="uid://bmmqnfmsv0ivw" path="res://grafiikka/mustekala.png" id="1_7e0eh"]
+[ext_resource type="PackedScene" uid="uid://dr6d7eg77qxr3" path="res://bullet/enemy_bullet.tscn" id="2_g7cty"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6ka4i"]
 size = Vector2(40, 31)
 
 [node name="Alien" type="Area2D" groups=["aliens"]]
+script = ExtResource("1_0hl8c")
+ammus_skene = ExtResource("2_g7cty")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -0.5)
@@ -13,3 +17,9 @@ shape = SubResource("RectangleShape2D_6ka4i")
 
 [node name="Turska" type="Sprite2D" parent="."]
 texture = ExtResource("1_7e0eh")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 2.0
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

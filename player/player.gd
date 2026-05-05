@@ -48,3 +48,9 @@ func shoot():
 		can_shoot = false
 		await get_tree().create_timer(fire_rate).timeout
 		can_shoot = true
+		
+# Tämä funktio suoritetaan, kun vihollisen ammus osuu
+func ota_vahinkoa():
+	print("Pelaajaan osui!")
+	# Aloitetaan peli alusta 
+	get_tree().reload_current_scene()

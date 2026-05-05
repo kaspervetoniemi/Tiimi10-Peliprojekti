@@ -1,0 +1,23 @@
+[gd_scene load_steps=3 format=3 uid="uid://dr6d7eg77qxr3"]
+
+[ext_resource type="Script" uid="uid://ci8s3rwjhl2xf" path="res://bullet/enemy_bullet.gd" id="1_71nad"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_54h3y"]
+size = Vector2(13, 40)
+
+[node name="EnemyBullet" type="Area2D"]
+scale = Vector2(0.2, 0.4)
+collision_layer = 0
+script = ExtResource("1_71nad")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+offset_left = -7.0
+offset_top = -20.0
+offset_right = 6.0
+offset_bottom = 20.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_54h3y")
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
