@@ -89,6 +89,11 @@ func _shoot_shotgun() -> void:
 func apply_powerup(powerup_type: String) -> void:
 	current_powerup = powerup_type
 
+	var main_scene = get_tree().current_scene
+
+	if main_scene != null and main_scene.has_method("show_powerup_text"):
+		main_scene.show_powerup_text(powerup_type)
+
 	if powerup_type == "rapid":
 		fire_rate = 0.18
 		powerup_time_left = 6.0

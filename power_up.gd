@@ -13,10 +13,11 @@ var glow_rect: ColorRect
 
 func _ready() -> void:
 	add_to_group("powerups")
-	area_entered.connect(_on_area_entered)
+
+	if not area_entered.is_connected(_on_area_entered):
+		area_entered.connect(_on_area_entered)
 
 	base_x = position.x
-
 	_create_glow()
 	_setup_colors()
 	_start_idle_animation()
@@ -52,8 +53,8 @@ func _create_glow() -> void:
 	# Luodaan hohde taakse automaattisesti
 	glow_rect = ColorRect.new()
 	glow_rect.name = "GlowRect"
-	glow_rect.size = Vector2(34, 34)
-	glow_rect.position = Vector2(-17, -17)
+	glow_rect.size = Vector2(42, 42)
+	glow_rect.position = Vector2(-21, -21)
 	glow_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	glow_rect.z_index = -1
 	add_child(glow_rect)
@@ -71,17 +72,17 @@ func _setup_colors() -> void:
 	if powerup_type == "rapid":
 		core_rect.color = Color(1.0, 0.92, 0.15, 1.0)
 		if glow_rect != null:
-			glow_rect.color = Color(1.0, 0.9, 0.2, 0.30)
+			glow_rect.color = Color(1.0, 0.9, 0.2, 0.42)
 
 	elif powerup_type == "shotgun":
 		core_rect.color = Color(0.25, 1.0, 0.45, 1.0)
 		if glow_rect != null:
-			glow_rect.color = Color(0.25, 1.0, 0.45, 0.28)
+			glow_rect.color = Color(0.25, 1.0, 0.45, 0.40)
 
 	else:
 		core_rect.color = Color(1.0, 1.0, 1.0, 1.0)
 		if glow_rect != null:
-			glow_rect.color = Color(1.0, 1.0, 1.0, 0.22)
+			glow_rect.color = Color(1.0, 1.0, 1.0, 0.32)
 
 
 func _start_idle_animation() -> void:
@@ -131,8 +132,8 @@ func _collect_effect() -> void:
 	tween.set_trans(Tween.TRANS_BACK)
 	tween.set_ease(Tween.EASE_OUT)
 
-	tween.tween_property(self, "scale", Vector2(1.8, 1.8), 0.18)
-	tween.tween_property(self, "modulate", Color(1, 1, 1, 0), 0.18)
+	tween.tween_property(self, "scale", Vector2(2.2, 2.2), 0.25)
+	tween.tween_property(self, "modulate", Color(1, 1, 1, 0), 0.25)
 
 	await tween.finished
 	queue_free()

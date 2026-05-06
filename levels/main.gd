@@ -476,7 +476,7 @@ func try_spawn_powerup(spawn_position: Vector2) -> void:
 	if powerup_scene == null:
 		return
 
-	var drop_chance: float = 0.14
+	var drop_chance: float = 0.07
 
 	if randf() > drop_chance:
 		return
@@ -488,3 +488,56 @@ func try_spawn_powerup(spawn_position: Vector2) -> void:
 	powerup.powerup_type = possible_types.pick_random()
 
 	add_child(powerup)
+
+func show_powerup_text(powerup_type: String) -> void:
+	var text_label := Label.new()
+
+	if powerup_type == "rapid":
+		text_label.text = "RAPID FIRE"
+		text_label.add_theme_color_override("font_color", Color("#FFE81F"))
+	elif powerup_type == "shotgun":
+		text_label.text = "SHOTGUN"
+		text_label.add_theme_color_override("font_color", Color("#46FF7A"))
+	else:
+		text_label.text = "POWER UP"
+		text_label.add_theme_color_override("font_color", Color.WHITE)
+
+	text_label.add_theme_color_override("font_outline_color", Color.BLACK)
+	text_label.add_theme_constant_override("outline_size", 2)
+
+	var game_font = level_intro_label.get_theme_font("font")
+	if game_font != null:
+		text_label.add_theme_font_override("font", game_font)
+
+	text_label.add_theme_font_size_override("font_size", 26)
+
+	text_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	text_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+
+	var screen_size: Vector2 = get_viewport_rect().size
+
+	text_label.size = Vector2(360, 60)
+	text_label.position = Vector2(
+		screen_size.x / 2.0 - text_label.size.x / 2.0,
+		screen_size.y * 0.72
+	)
+
+	text_label.modulate = Color(1, 1, 1, 0)
+	text_label.scale = Vector2(0.9, 0.9)
+
+	add_child(text_label)
+
+	var powerup_tween := create_tween()
+	powerup_tween.set_trans(Tween.TRANS_SINE)
+	powerup_tween.set_ease(Tween.EASE_IN_OUT)
+
+	powerup_tween.tween_property(text_label, "modulate", Color(1, 1, 1, 1), 0.18)
+	powerup_tween.parallel().tween_property(text_label, "scale", Vector2(1.0, 1.0), 0.18)
+
+	powerup_tween.tween_interval(0.55)
+
+	powerup_tween.tween_property(text_label, "position:y", text_label.position.y - 12.0, 0.45)
+	powerup_tween.parallel().tween_property(text_label, "modulate", Color(1, 1, 1, 0), 0.45)
+
+	await powerup_tween.finished
+	text_label.queue_free()
