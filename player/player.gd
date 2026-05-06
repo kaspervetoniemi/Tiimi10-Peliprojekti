@@ -109,6 +109,7 @@ func _clear_powerup() -> void:
 
 func ota_vahinkoa() -> void:
 	print("Pelaajaan osui!")
+	Global.score=0
 	get_tree().reload_current_scene()
 
 
