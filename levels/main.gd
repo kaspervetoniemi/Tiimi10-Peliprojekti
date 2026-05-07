@@ -13,6 +13,10 @@ var boss_max_health: int = 0
 var is_changing_level: bool = false
 
 var shoot_timer: float = 0.0
+var boss_special_timer: float = 3.0
+var boss_warning_active: bool = false
+var boss_move_timer: float = 0.0
+var boss_target_position: Vector2 = Vector2.ZERO
 var is_game_over: bool = false
 
 var game_over_layer: CanvasLayer
@@ -80,6 +84,7 @@ func _process(delta: float) -> void:
 
 	_move_floating_aliens(delta)
 	_move_boss(delta)
+	_boss_special_attacks(delta)
 	_enemy_shooting(delta)
 	_move_enemy_bullets(delta)
 
@@ -92,6 +97,8 @@ func _on_level_started(level_number: int, is_boss_level: bool) -> void:
 	current_boss = null
 	boss_health_bar.visible = false
 	level_intro_label.visible = false
+	boss_special_timer = randf_range(2.5, 4.0)
+	boss_warning_active = false
 
 	alien_speed = level_manager.get_alien_speed()
 	shoot_timer = randf_range(
@@ -247,6 +254,8 @@ func _spawn_boss(level_number: int) -> void:
 	current_boss = boss
 	boss_max_health = level_manager.get_boss_health()
 	boss_health = boss_max_health
+	boss_target_position = boss.position
+	boss_move_timer = randf_range(0.6, 1.4)
 
 	boss_health_bar.visible = true
 	boss_health_bar.min_value = 0
@@ -264,29 +273,57 @@ func _move_boss(delta: float) -> void:
 	if not is_instance_valid(current_boss):
 		return
 
-	var screen_width: float = get_viewport_rect().size.x
-	var direction: int = 1
+	var screen_size: Vector2 = get_viewport_rect().size
+	var boss_level: int = level_manager.current_level
 
-	if current_boss.has_meta("boss_direction"):
-		direction = int(current_boss.get_meta("boss_direction"))
+	boss_move_timer -= delta
 
-	var boss_speed: float = alien_speed * 0.75
+	if boss_move_timer <= 0.0:
+		var min_x: float = 120.0
+		var max_x: float = screen_size.x - 120.0
 
-	current_boss.position.x += float(direction) * boss_speed * delta
+		var min_y: float = 85.0
+		var max_y: float = screen_size.y * 0.34
 
-	if current_boss.position.x < 120.0:
-		current_boss.position.x = 120.0
-		direction = 1
+		if boss_level == 10:
+			max_y = screen_size.y * 0.38
+		elif boss_level == 15:
+			max_y = screen_size.y * 0.42
 
-	if current_boss.position.x > screen_width - 120.0:
-		current_boss.position.x = screen_width - 120.0
-		direction = -1
+		boss_target_position = Vector2(
+			randf_range(min_x, max_x),
+			randf_range(min_y, max_y)
+		)
+
+		if boss_level == 5:
+			boss_move_timer = randf_range(1.2, 2.2)
+		elif boss_level == 10:
+			boss_move_timer = randf_range(0.9, 1.7)
+		else:
+			boss_move_timer = randf_range(0.6, 1.3)
+
+	var move_speed: float = alien_speed * 1.25
+
+	if boss_level == 10:
+		move_speed = alien_speed * 1.70
+	elif boss_level == 15:
+		move_speed = alien_speed * 2.10
+
+	current_boss.position = current_boss.position.move_toward(
+		boss_target_position,
+		move_speed * delta
+	)
 
 	var time_value: float = float(Time.get_ticks_msec()) / 1000.0
-	current_boss.position.y = 120.0 + sin(time_value * 1.5) * 18.0
 
-	current_boss.set_meta("boss_direction", direction)
+	var wobble_x: float = sin(time_value * 2.6) * 12.0 * delta
+	var wobble_y: float = cos(time_value * 2.1) * 8.0 * delta
 
+	current_boss.position.x += wobble_x
+	current_boss.position.y += wobble_y
+
+	current_boss.position.x = clamp(current_boss.position.x, 100.0, screen_size.x - 100.0)
+	current_boss.position.y = clamp(current_boss.position.y, 75.0, screen_size.y * 0.45)
 
 func _enemy_shooting(delta: float) -> void:
 	shoot_timer -= delta
@@ -811,3 +848,179 @@ func _move_game_over_scanlines(delta: float) -> void:
 
 		if line.position.y > screen_height:
 			line.position.y = -2.0
+func _boss_special_attacks(delta: float) -> void:
+	if current_boss == null:
+		return
+
+	if not is_instance_valid(current_boss):
+		return
+
+	if is_changing_level or is_game_over:
+		return
+
+	boss_special_timer -= delta
+
+	if boss_special_timer > 0.0:
+		return
+
+	var boss_level: int = level_manager.current_level
+
+	if boss_level == 5:
+		boss_special_timer = randf_range(2.8, 4.2)
+		_show_boss_warning("SPREAD SHOT")
+		await get_tree().create_timer(0.55).timeout
+		_boss_spread_shot(3)
+
+	elif boss_level == 10:
+		boss_special_timer = randf_range(2.0, 4.0)
+		var attack_roll := randi_range(1, 2)
+
+		if attack_roll == 1:
+			_show_boss_warning("SPREAD SHOT")
+			await get_tree().create_timer(0.50).timeout
+			_boss_spread_shot(5)
+		else:
+			_show_boss_warning("BULLET RAIN")
+			await get_tree().create_timer(0.50).timeout
+			_boss_bullet_rain(8)
+
+	elif boss_level == 15:
+		boss_special_timer = randf_range(2.6, 4.2)
+		var attack_roll := randi_range(1, 3)
+
+		if attack_roll == 1:
+			_show_boss_warning("SPREAD SHOT")
+			await get_tree().create_timer(0.45).timeout
+			_boss_spread_shot(7)
+		elif attack_roll == 2:
+			_show_boss_warning("BULLET RAIN")
+			await get_tree().create_timer(0.45).timeout
+			_boss_bullet_rain(12)
+		else:
+			_show_boss_warning("DASH")
+			await get_tree().create_timer(0.35).timeout
+			_boss_dash()
+
+
+func _boss_spread_shot(amount: int) -> void:
+	if current_boss == null:
+		return
+
+	if not is_instance_valid(current_boss):
+		return
+
+	var start_x: float = -0.85
+	var end_x: float = 0.85
+
+	for i in range(amount):
+		var t: float = 0.5
+
+		if amount > 1:
+			t = float(i) / float(amount - 1)
+
+		var x_dir: float = lerp(start_x, end_x, t)
+		var direction: Vector2 = Vector2(x_dir, 1.0).normalized()
+
+		_spawn_boss_bullet(
+			current_boss.global_position + Vector2(0, 35),
+			direction,
+			Color(1.0, 0.08, 0.08, 1.0)
+		)
+
+
+func _boss_bullet_rain(amount: int) -> void:
+	var screen_width: float = get_viewport_rect().size.x
+
+	for i in range(amount):
+		var start_position := Vector2(
+			randf_range(60.0, screen_width - 60.0),
+			randf_range(25.0, 95.0)
+		)
+
+		var direction := Vector2(
+			randf_range(-0.18, 0.18),
+			1.0
+		).normalized()
+
+		_spawn_boss_bullet(
+			start_position,
+			direction,
+			Color(1.0, 0.28, 0.05, 1.0)
+		)
+
+
+func _boss_dash() -> void:
+	if current_boss == null:
+		return
+
+	if not is_instance_valid(current_boss):
+		return
+
+	var screen_width: float = get_viewport_rect().size.x
+	var target_x: float = randf_range(120.0, screen_width - 120.0)
+
+	var dash_tween := create_tween()
+	dash_tween.set_trans(Tween.TRANS_BACK)
+	dash_tween.set_ease(Tween.EASE_OUT)
+	dash_tween.tween_property(current_boss, "position:x", target_x, 0.42)
+
+
+func _spawn_boss_bullet(start_position: Vector2, bullet_direction: Vector2, bullet_color: Color) -> void:
+	var bullet := ColorRect.new()
+
+	bullet.name = "BossBullet"
+	bullet.color = bullet_color
+	bullet.size = Vector2(6.0, 18.0)
+	bullet.global_position = start_position
+	bullet.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	bullet.add_to_group("enemy_bullets")
+
+	var bullet_speed: float = level_manager.get_bullet_speed() * 1.08
+	bullet.set_meta("velocity", bullet_direction.normalized() * bullet_speed)
+
+	add_child(bullet)
+
+
+func _show_boss_warning(warning_text: String) -> void:
+	if boss_warning_active:
+		return
+
+	boss_warning_active = true
+
+	var warning_label := Label.new()
+	warning_label.text = warning_text
+	warning_label.add_theme_color_override("font_color", Color("#FF3030"))
+	warning_label.add_theme_color_override("font_outline_color", Color.BLACK)
+	warning_label.add_theme_constant_override("outline_size", 2)
+
+	var game_font = level_intro_label.get_theme_font("font")
+	if game_font != null:
+		warning_label.add_theme_font_override("font", game_font)
+
+	warning_label.add_theme_font_size_override("font_size", 24)
+	warning_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	warning_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+
+	var screen_size: Vector2 = get_viewport_rect().size
+	warning_label.size = Vector2(420, 50)
+	warning_label.position = Vector2(
+		screen_size.x / 2.0 - warning_label.size.x / 2.0,
+		60.0
+	)
+
+	warning_label.modulate = Color(1, 1, 1, 0)
+	add_child(warning_label)
+
+	var warning_tween := create_tween()
+	warning_tween.set_trans(Tween.TRANS_SINE)
+	warning_tween.set_ease(Tween.EASE_IN_OUT)
+
+	warning_tween.tween_property(warning_label, "modulate", Color(1, 1, 1, 1), 0.15)
+	warning_tween.tween_interval(0.35)
+	warning_tween.tween_property(warning_label, "modulate", Color(1, 1, 1, 0), 0.25)
+
+	await warning_tween.finished
+
+	warning_label.queue_free()
+	boss_warning_active = false
