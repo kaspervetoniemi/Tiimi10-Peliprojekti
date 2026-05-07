@@ -117,6 +117,9 @@ func _on_area_entered(area: Area2D) -> void:
 		if area.has_method("apply_powerup"):
 			area.apply_powerup(powerup_type)
 
+		if has_node("CollectSound"):
+			$CollectSound.play()
+
 		_collect_effect()
 		return
 
