@@ -28,6 +28,18 @@ var game_over_title_label: Label
 var game_over_score_label: Label
 var game_over_restart_button: Button
 var game_over_menu_button: Button
+var victory_layer: CanvasLayer
+var victory_background: ColorRect
+var victory_stars: Array[ColorRect] = []
+var victory_star_twinkle_data: Array[Dictionary] = []
+var victory_container: VBoxContainer
+var victory_title_label: Label
+var victory_subtitle_label: Label
+var victory_score_label: Label
+var victory_restart_button: Button
+var victory_menu_button: Button
+var is_victory: bool = false
+var victory_glow_time: float = 0.0
 var game_over_flash: ColorRect
 var game_over_scanlines: Array[ColorRect] = []
 var game_over_scanline_speed: float = 22.0
@@ -59,6 +71,7 @@ func _ready() -> void:
 	level_intro_label.visible = false
 
 	_create_game_over_ui()
+	_create_victory_ui()
 	
 	_start_music()
 	level_manager.start_game()
@@ -94,10 +107,15 @@ func _start_music() -> void:
 	boss_health_bar.add_theme_stylebox_override("fill", fill_style)
 
 func _process(delta: float) -> void:
+		
 	if is_game_over:
 		_move_game_over_scanlines(delta)
 		return
 		
+	if is_victory:
+		_animate_victory_background(delta)
+		return
+	
 	if boss_intro_active:
 		return
 	var aliens: Array = get_tree().get_nodes_in_group("aliens")
@@ -531,7 +549,7 @@ func _start_level_clear_sequence() -> void:
 
 
 func _on_game_completed() -> void:
-	level_label.text = "YOU WIN!"
+	show_victory_screen()
 	boss_health_bar.visible = false
 	level_intro_label.visible = false
 	_clear_enemy_bullets()
@@ -1222,3 +1240,304 @@ func _on_main_menu_pressed() -> void:
 		transition.transition_to_scene(start_menu_scene_path)
 	else:
 		get_tree().change_scene_to_file(start_menu_scene_path)
+
+
+
+func _style_yellow_button(button: Button) -> void:
+	button.add_theme_color_override("font_color", Color.WHITE)
+	button.add_theme_color_override("font_hover_color", Color.WHITE)
+	button.add_theme_color_override("font_pressed_color", Color.WHITE)
+	button.add_theme_color_override("font_focus_color", Color.WHITE)
+	button.add_theme_color_override("font_outline_color", Color.BLACK)
+	button.add_theme_constant_override("outline_size", 2)
+
+	var normal_style := StyleBoxFlat.new()
+	normal_style.bg_color = Color("#FFE81F")
+	normal_style.border_width_left = 2
+	normal_style.border_width_right = 2
+	normal_style.border_width_top = 2
+	normal_style.border_width_bottom = 2
+	normal_style.border_color = Color("#A88700")
+
+	var hover_style := StyleBoxFlat.new()
+	hover_style.bg_color = Color("#FFF36A")
+	hover_style.border_width_left = 2
+	hover_style.border_width_right = 2
+	hover_style.border_width_top = 2
+	hover_style.border_width_bottom = 2
+	hover_style.border_color = Color("#FFE81F")
+
+	var pressed_style := StyleBoxFlat.new()
+	pressed_style.bg_color = Color("#D6B800")
+	pressed_style.border_width_left = 2
+	pressed_style.border_width_right = 2
+	pressed_style.border_width_top = 2
+	pressed_style.border_width_bottom = 2
+	pressed_style.border_color = Color("#6F5D00")
+
+	button.add_theme_stylebox_override("normal", normal_style)
+	button.add_theme_stylebox_override("hover", hover_style)
+	button.add_theme_stylebox_override("pressed", pressed_style)
+
+func _animate_victory_background(delta: float) -> void:
+	victory_glow_time += delta
+
+	for i in range(victory_stars.size()):
+		var star: ColorRect = victory_stars[i]
+		if not is_instance_valid(star):
+			continue
+
+		var data: Dictionary = victory_star_twinkle_data[i]
+
+		var speed: float = data["speed"]
+		var phase: float = data["phase"]
+		var base_alpha: float = data["base_alpha"]
+		var pulse_strength: float = data["pulse_strength"]
+		var base_scale: float = data["base_scale"]
+
+		var pulse := (sin(victory_glow_time * speed + phase) + 1.0) * 0.5
+		var alpha := base_alpha + pulse * pulse_strength
+		alpha = clamp(alpha, 0.08, 1.0)
+
+		star.modulate.a = alpha
+
+		var scale_value := base_scale + pulse * 0.35
+		star.scale = Vector2(scale_value, scale_value)
+
+func _create_victory_ui() -> void:
+	victory_layer = CanvasLayer.new()
+	victory_layer.layer = 210
+	victory_layer.visible = false
+	add_child(victory_layer)
+
+	victory_background = ColorRect.new()
+	victory_background.color = Color(0.02, 0.03, 0.06, 0.0)
+	victory_background.set_anchors_preset(Control.PRESET_FULL_RECT)
+	victory_background.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	victory_layer.add_child(victory_background)
+
+	var screen_size: Vector2 = get_viewport_rect().size
+
+	victory_stars.clear()
+	victory_star_twinkle_data.clear()
+
+	var star_colors: Array[Color] = [
+		Color("#FFF6D5"),
+		Color("#FFE81F"),
+		Color("#7DF9FF"),
+		Color("#C77DFF"),
+		Color("#46FF7A")
+	]
+
+	for i in range(55):
+		var star := ColorRect.new()
+		var size_pick := randi_range(2, 4)
+
+		star.size = Vector2(size_pick, size_pick)
+		star.position = Vector2(
+			randf_range(12.0, screen_size.x - 12.0),
+			randf_range(12.0, screen_size.y - 12.0)
+		)
+
+		var chosen_color: Color = star_colors[randi() % star_colors.size()]
+		star.color = chosen_color
+		star.modulate = Color(chosen_color.r, chosen_color.g, chosen_color.b, 0.0)
+		star.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+		victory_layer.add_child(star)
+		victory_stars.append(star)
+
+		victory_star_twinkle_data.append({
+			"speed": randf_range(1.4, 3.4),
+			"phase": randf_range(0.0, TAU),
+			"base_alpha": randf_range(0.10, 0.30),
+			"pulse_strength": randf_range(0.28, 0.70),
+			"base_scale": randf_range(0.85, 1.15)
+		})
+
+	victory_container = VBoxContainer.new()
+	victory_container.alignment = BoxContainer.ALIGNMENT_CENTER
+	victory_container.add_theme_constant_override("separation", 14)
+	victory_container.size = Vector2(620, 280)
+	victory_container.position = Vector2(
+		screen_size.x / 2.0 - victory_container.size.x / 2.0,
+		screen_size.y / 2.0 - victory_container.size.y / 2.0
+	)
+	victory_container.modulate = Color(1, 1, 1, 0)
+	victory_container.scale = Vector2(0.92, 0.92)
+	victory_layer.add_child(victory_container)
+
+	var game_font = level_intro_label.get_theme_font("font")
+
+	victory_title_label = Label.new()
+	victory_title_label.text = "YOU WIN!"
+	victory_title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	victory_title_label.add_theme_color_override("font_color", Color("#FFF6D5"))
+	victory_title_label.add_theme_color_override("font_outline_color", Color.BLACK)
+	victory_title_label.add_theme_constant_override("outline_size", 3)
+	if game_font != null:
+		victory_title_label.add_theme_font_override("font", game_font)
+	victory_title_label.add_theme_font_size_override("font_size", 52)
+	victory_container.add_child(victory_title_label)
+
+	victory_subtitle_label = Label.new()
+	victory_subtitle_label.text = "GALAXY SAVED"
+	victory_subtitle_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	victory_subtitle_label.add_theme_color_override("font_color", Color("#7DF9FF"))
+	victory_subtitle_label.add_theme_color_override("font_outline_color", Color.BLACK)
+	victory_subtitle_label.add_theme_constant_override("outline_size", 2)
+	if game_font != null:
+		victory_subtitle_label.add_theme_font_override("font", game_font)
+	victory_subtitle_label.add_theme_font_size_override("font_size", 24)
+	victory_container.add_child(victory_subtitle_label)
+
+	victory_score_label = Label.new()
+	victory_score_label.text = "FINAL SCORE: 0"
+	victory_score_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	victory_score_label.add_theme_color_override("font_color", Color.WHITE)
+	victory_score_label.add_theme_color_override("font_outline_color", Color.BLACK)
+	victory_score_label.add_theme_constant_override("outline_size", 2)
+	if game_font != null:
+		victory_score_label.add_theme_font_override("font", game_font)
+	victory_score_label.add_theme_font_size_override("font_size", 24)
+	victory_container.add_child(victory_score_label)
+
+	victory_restart_button = Button.new()
+	victory_restart_button.text = "RESTART"
+	victory_restart_button.custom_minimum_size = Vector2(240, 46)
+	victory_restart_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	if game_font != null:
+		victory_restart_button.add_theme_font_override("font", game_font)
+	victory_restart_button.add_theme_font_size_override("font_size", 24)
+	_style_yellow_button(victory_restart_button)
+	victory_restart_button.pressed.connect(_on_restart_pressed)
+	victory_container.add_child(victory_restart_button)
+
+	victory_menu_button = Button.new()
+	victory_menu_button.text = "MAIN MENU"
+	victory_menu_button.custom_minimum_size = Vector2(240, 42)
+	victory_menu_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	if game_font != null:
+		victory_menu_button.add_theme_font_override("font", game_font)
+	victory_menu_button.add_theme_font_size_override("font_size", 20)
+	_style_yellow_button(victory_menu_button)
+	victory_menu_button.pressed.connect(_on_main_menu_pressed)
+	victory_container.add_child(victory_menu_button)
+func show_victory_screen() -> void:
+	if is_victory:
+		return
+
+	is_victory = true
+	is_changing_level = false
+	victory_glow_time = 0.0
+
+	_clear_enemy_bullets()
+	_clear_aliens()
+
+	if player != null and is_instance_valid(player):
+		if player.has_method("set_controls_enabled"):
+			player.set_controls_enabled(false)
+
+	if music_player != null:
+		music_player.stop()
+
+	boss_health_bar.visible = false
+	level_intro_label.visible = false
+
+	victory_score_label.text = "FINAL SCORE: " + str(Global.score)
+
+	var shader_material := star_background.material as ShaderMaterial
+	if shader_material != null:
+		shader_material.set_shader_parameter("green_glow_color", Color(0.18, 0.85, 1.0, 1.0))
+		shader_material.set_shader_parameter("green_glow_color_2", Color(0.62, 0.22, 0.95, 1.0))
+		shader_material.set_shader_parameter("glow_strength", 0.32)
+		shader_material.set_shader_parameter("speed", 0.040)
+
+	victory_layer.visible = true
+	victory_background.color = Color(0.02, 0.03, 0.06, 0.0)
+
+	for star in victory_stars:
+		if is_instance_valid(star):
+			star.modulate.a = 0.0
+
+	victory_container.modulate = Color(1, 1, 1, 0)
+	victory_container.scale = Vector2(0.92, 0.92)
+
+	var tween := create_tween()
+	tween.set_parallel(true)
+	tween.set_trans(Tween.TRANS_SINE)
+	tween.set_ease(Tween.EASE_IN_OUT)
+
+	tween.tween_property(victory_background, "color", Color(0.02, 0.03, 0.06, 0.38), 1.0)
+
+	for star in victory_stars:
+		if is_instance_valid(star):
+			var target_alpha := randf_range(0.18, 0.55)
+			tween.tween_property(star, "modulate:a", target_alpha, 0.9)
+			
+	tween.tween_property(victory_container, "modulate", Color(1, 1, 1, 1), 0.9)
+	tween.tween_property(victory_container, "scale", Vector2(1.0, 1.0), 0.9)
+
+	await tween.finished
+
+	_start_victory_pulse()
+	victory_restart_button.grab_focus()
+
+
+func _start_victory_pulse() -> void:
+	var title_pulse := create_tween()
+	title_pulse.set_loops()
+	title_pulse.set_trans(Tween.TRANS_SINE)
+	title_pulse.set_ease(Tween.EASE_IN_OUT)
+
+	title_pulse.tween_property(
+		victory_title_label,
+		"modulate",
+		Color(1.0, 0.92, 0.45, 1.0),
+		1.1
+	)
+
+	title_pulse.tween_property(
+		victory_title_label,
+		"modulate",
+		Color(1.0, 1.0, 1.0, 1.0),
+		1.1
+	)
+
+	var subtitle_pulse := create_tween()
+	subtitle_pulse.set_loops()
+	subtitle_pulse.set_trans(Tween.TRANS_SINE)
+	subtitle_pulse.set_ease(Tween.EASE_IN_OUT)
+
+	subtitle_pulse.tween_property(
+		victory_subtitle_label,
+		"modulate",
+		Color(0.70, 1.0, 1.0, 1.0),
+		1.0
+	)
+
+	subtitle_pulse.tween_property(
+		victory_subtitle_label,
+		"modulate",
+		Color(1.0, 1.0, 1.0, 1.0),
+		1.0
+	)
+
+	var button_pulse := create_tween()
+	button_pulse.set_loops()
+	button_pulse.set_trans(Tween.TRANS_SINE)
+	button_pulse.set_ease(Tween.EASE_IN_OUT)
+
+	button_pulse.tween_property(
+		victory_restart_button,
+		"modulate",
+		Color(1.0, 0.96, 0.55, 1.0),
+		1.0
+	)
+
+	button_pulse.tween_property(
+		victory_restart_button,
+		"modulate",
+		Color(1.0, 1.0, 1.0, 1.0),
+		1.0
+	)
