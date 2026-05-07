@@ -20,6 +20,7 @@ var game_over_container: VBoxContainer
 var game_over_title_label: Label
 var game_over_score_label: Label
 var game_over_restart_button: Button
+var game_over_flash: ColorRect
 
 var alien_scenes: Array[PackedScene] = [
 	preload("res://enemys/rapu.tscn"),
@@ -564,6 +565,10 @@ func _create_game_over_ui() -> void:
 	game_over_background.color = Color(0, 0, 0, 0.0)
 	game_over_background.set_anchors_preset(Control.PRESET_FULL_RECT)
 	game_over_layer.add_child(game_over_background)
+	game_over_flash = ColorRect.new()
+	game_over_flash.color = Color(1.0, 0.0, 0.0, 0.0)
+	game_over_flash.set_anchors_preset(Control.PRESET_FULL_RECT)
+	game_over_layer.add_child(game_over_flash)
 
 	game_over_container = VBoxContainer.new()
 	game_over_container.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -681,16 +686,21 @@ func show_game_over() -> void:
 	game_over_background.color = Color(0, 0, 0, 0.0)
 	game_over_container.modulate = Color(1, 1, 1, 0)
 	game_over_container.scale = Vector2(0.92, 0.92)
-
+	
+	game_over_flash.color = Color(1.0, 0.0, 0.0, 0.18)
+	game_over_title_label.position.x -= 8.0
+	
 	var tween := create_tween()
 	tween.set_parallel(true)
 	tween.set_trans(Tween.TRANS_SINE)
 	tween.set_ease(Tween.EASE_IN_OUT)
 
-	tween.tween_property(game_over_background, "color", Color(0, 0, 0, 0.72), 0.30)
-	tween.tween_property(game_over_container, "modulate", Color(1, 1, 1, 1), 0.30)
-	tween.tween_property(game_over_container, "scale", Vector2(1.0, 1.0), 0.30)
-
+	tween.tween_property(game_over_background, "color", Color(0.10, 0.0, 0.0, 0.94), 1.15)
+	tween.tween_property(game_over_container, "modulate", Color(1, 1, 1, 1), 1.15)
+	tween.tween_property(game_over_container, "scale", Vector2(1.0, 1.0), 1.15)
+	tween.tween_property(game_over_flash, "color", Color(1.0, 0.0, 0.0, 0.0), 0.35)
+	tween.tween_property(game_over_title_label, "position:x", game_over_title_label.position.x + 8.0, 0.20)
+	
 	await tween.finished
 	_start_game_over_pulse()
 	game_over_restart_button.grab_focus()
