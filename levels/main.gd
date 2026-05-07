@@ -2,6 +2,7 @@ extends Node2D
 
 @export var alien_scene: PackedScene
 @export var powerup_scene: PackedScene
+@export var start_menu_scene_path: String = "res://startmenu.tscn"
 var boss_scene: PackedScene = preload("res://enemys/bossi.tscn")
 
 var alien_speed: float = 50.0
@@ -26,6 +27,7 @@ var game_over_container: VBoxContainer
 var game_over_title_label: Label
 var game_over_score_label: Label
 var game_over_restart_button: Button
+var game_over_menu_button: Button
 var game_over_flash: ColorRect
 var game_over_scanlines: Array[ColorRect] = []
 var game_over_scanline_speed: float = 22.0
@@ -781,6 +783,28 @@ func _create_game_over_ui() -> void:
 	game_over_restart_button.pressed.connect(_on_restart_pressed)
 
 	game_over_container.add_child(game_over_restart_button)
+	game_over_menu_button = Button.new()
+	game_over_menu_button.text = "MAIN MENU"
+	game_over_menu_button.custom_minimum_size = Vector2(230, 42)
+	game_over_menu_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+
+	var game_font_menu = level_intro_label.get_theme_font("font")
+	if game_font_menu != null:
+		game_over_menu_button.add_theme_font_override("font", game_font_menu)
+
+	game_over_menu_button.add_theme_font_size_override("font_size", 20)
+	game_over_menu_button.add_theme_color_override("font_color", Color.WHITE)
+	game_over_menu_button.add_theme_color_override("font_hover_color", Color.WHITE)
+	game_over_menu_button.add_theme_color_override("font_pressed_color", Color.WHITE)
+	game_over_menu_button.add_theme_color_override("font_focus_color", Color.WHITE)
+	game_over_menu_button.add_theme_color_override("font_outline_color", Color.BLACK)
+	game_over_menu_button.add_theme_constant_override("outline_size", 2)
+
+	game_over_menu_button.add_theme_stylebox_override("normal", normal_style)
+	game_over_menu_button.add_theme_stylebox_override("hover", hover_style)
+	game_over_menu_button.add_theme_stylebox_override("pressed", pressed_style)
+	game_over_menu_button.pressed.connect(_on_main_menu_pressed)
+	game_over_container.add_child(game_over_menu_button)
 
 func show_game_over() -> void:
 	if is_game_over:
@@ -1190,3 +1214,12 @@ func _style_boss_health_bar() -> void:
 	boss_health_bar.add_theme_color_override("font_outline_color", Color.BLACK)
 	boss_health_bar.add_theme_constant_override("outline_size", 2)
 	
+func _on_main_menu_pressed() -> void:
+	Global.score = 0
+
+	var transition = get_node_or_null("/root/SceneTransition")
+
+	if transition != null and transition.has_method("transition_to_scene"):
+		transition.transition_to_scene(start_menu_scene_path)
+	else:
+		get_tree().change_scene_to_file(start_menu_scene_path)
