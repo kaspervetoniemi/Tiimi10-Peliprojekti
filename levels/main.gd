@@ -21,6 +21,8 @@ var game_over_title_label: Label
 var game_over_score_label: Label
 var game_over_restart_button: Button
 var game_over_flash: ColorRect
+var game_over_scanlines: Array[ColorRect] = []
+var game_over_scanline_speed: float = 22.0
 
 var alien_scenes: Array[PackedScene] = [
 	preload("res://enemys/rapu.tscn"),
@@ -63,6 +65,7 @@ func _start_music() -> void:
 
 func _process(delta: float) -> void:
 	if is_game_over:
+		_move_game_over_scanlines(delta)
 		return
 	var aliens: Array = get_tree().get_nodes_in_group("aliens")
 
@@ -570,7 +573,21 @@ func _create_game_over_ui() -> void:
 	game_over_flash.set_anchors_preset(Control.PRESET_FULL_RECT)
 	game_over_layer.add_child(game_over_flash)
 
+	game_over_scanlines.clear()
+
+	var screen_size: Vector2 = get_viewport_rect().size
+
+	for i in range(0, int(screen_size.y), 18):
+		var line := ColorRect.new()
+		line.color = Color(1.0, 0.0, 0.0, 0.0)
+		line.position = Vector2(0, i)
+		line.size = Vector2(screen_size.x, 2)
+		line.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		game_over_layer.add_child(line)
+		game_over_scanlines.append(line)
+	
 	game_over_container = VBoxContainer.new()
+	
 	game_over_container.alignment = BoxContainer.ALIGNMENT_CENTER
 	game_over_container.add_theme_constant_override("separation", 16)
 	game_over_container.size = Vector2(500, 220)
@@ -689,15 +706,19 @@ func show_game_over() -> void:
 	
 	game_over_flash.color = Color(1.0, 0.0, 0.0, 0.18)
 	game_over_title_label.position.x -= 8.0
+	for line in game_over_scanlines:
+		line.color = Color(1.0, 0.0, 0.0, 0.0)
 	
 	var tween := create_tween()
 	tween.set_parallel(true)
 	tween.set_trans(Tween.TRANS_SINE)
 	tween.set_ease(Tween.EASE_IN_OUT)
 
-	tween.tween_property(game_over_background, "color", Color(0.10, 0.0, 0.0, 0.94), 1.15)
+	tween.tween_property(game_over_background, "color", Color(0.30, 0.0, 0.0, 0.96), 1.35)
 	tween.tween_property(game_over_container, "modulate", Color(1, 1, 1, 1), 1.15)
 	tween.tween_property(game_over_container, "scale", Vector2(1.0, 1.0), 1.15)
+	for line in game_over_scanlines:
+		tween.tween_property(line, "color", Color(1.0, 0.0, 0.0, 0.10), 1.25)
 	tween.tween_property(game_over_flash, "color", Color(1.0, 0.0, 0.0, 0.0), 0.35)
 	tween.tween_property(game_over_title_label, "position:x", game_over_title_label.position.x + 8.0, 0.20)
 	
@@ -753,3 +774,17 @@ func _start_game_over_pulse() -> void:
 		Color(1.0, 1.0, 1.0, 1.0),
 		1.0
 	)
+func _move_game_over_scanlines(delta: float) -> void:
+	if game_over_scanlines.is_empty():
+		return
+
+	var screen_height: float = get_viewport_rect().size.y
+
+	for line in game_over_scanlines:
+		if not is_instance_valid(line):
+			continue
+
+		line.position.y += game_over_scanline_speed * delta
+
+		if line.position.y > screen_height:
+			line.position.y = -2.0
