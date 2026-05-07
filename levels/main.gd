@@ -107,23 +107,22 @@ func _start_music() -> void:
 	boss_health_bar.add_theme_stylebox_override("fill", fill_style)
 
 func _process(delta: float) -> void:
-		
 	if is_game_over:
 		_move_game_over_scanlines(delta)
 		return
-		
+
 	if is_victory:
 		_animate_victory_background(delta)
 		return
-	
+
 	if boss_intro_active:
 		return
+
 	var aliens: Array = get_tree().get_nodes_in_group("aliens")
 
 	if aliens.size() == 0 and not is_changing_level:
 		_start_level_clear_sequence()
 		return
-
 	if is_changing_level:
 		_move_enemy_bullets(delta)
 		return
@@ -133,7 +132,6 @@ func _process(delta: float) -> void:
 	_boss_special_attacks(delta)
 	_enemy_shooting(delta)
 	_move_enemy_bullets(delta)
-
 
 func _on_level_started(level_number: int, is_boss_level: bool) -> void:
 	_clear_aliens()
