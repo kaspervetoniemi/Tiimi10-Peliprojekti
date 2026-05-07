@@ -788,9 +788,14 @@ func show_game_over() -> void:
 	is_game_over = true
 
 	_clear_enemy_bullets()
+	
+	if player != null and is_instance_valid(player):
+		if player.has_method("set_controls_enabled"):
+			player.set_controls_enabled(false)
 
 	if music_player != null:
 		music_player.stop()
+		
 
 	game_over_score_label.text = "SCORE: " + str(Global.score)
 

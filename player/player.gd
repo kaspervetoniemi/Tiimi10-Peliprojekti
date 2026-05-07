@@ -7,6 +7,7 @@ var speed: float = 300.0
 var normal_fire_rate: float = 0.7
 var fire_rate: float = 0.7
 var can_shoot: bool = true
+var controls_enabled: bool = true
 
 var current_powerup: String = ""
 var powerup_time_left: float = 0.0
@@ -29,6 +30,8 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	if not controls_enabled:
+		return
 	var direction = Input.get_axis("ui_left", "ui_right")
 	position.x += direction * speed * delta
 	position.x = clamp(position.x, 20, get_viewport_rect().size.x - 20)
@@ -124,3 +127,9 @@ func ota_vahinkoa() -> void:
 
 func take_damage(_amount: int = 1) -> void:
 	ota_vahinkoa()
+
+func set_controls_enabled(enabled: bool) -> void:
+	controls_enabled = enabled
+
+	if not enabled:
+		can_shoot = false
