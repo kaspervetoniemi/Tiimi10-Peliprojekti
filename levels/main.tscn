@@ -1,13 +1,14 @@
-[gd_scene load_steps=9 format=3 uid="uid://biwoh4swc430q"]
+[gd_scene load_steps=10 format=3 uid="uid://biwoh4swc430q"]
 
 [ext_resource type="Script" uid="uid://coxht0imgirfe" path="res://levels/main.gd" id="1_l8qe7"]
 [ext_resource type="PackedScene" uid="uid://sfepecx08qmi" path="res://power_up.tscn" id="2_6et1j"]
 [ext_resource type="PackedScene" uid="uid://c3nf5w5ubh41j" path="res://Scenes/star_background.tscn" id="3_5k4jt"]
 [ext_resource type="PackedScene" uid="uid://dgbdt268yye5v" path="res://player/player.tscn" id="3_ifaiv"]
-[ext_resource type="FontFile" uid="uid://b7q1p1hbudn0t" path="res://fonts/PixelOperator8-Bold.ttf" id="4_ifaiv"]
+[ext_resource type="FontFile" uid="uid://cvjukaggnp2fx" path="res://fonts/PixelOperator8-Bold.ttf" id="4_ifaiv"]
 [ext_resource type="Script" uid="uid://q10jvohbnlaa" path="res://levels/label.gd" id="5_5k4jt"]
-[ext_resource type="PackedScene" path="res://Scenes/scene_transition.tscn" id="7_6et1j"]
+[ext_resource type="PackedScene" uid="uid://b22u24ixvl1d2" path="res://Scenes/scene_transition.tscn" id="7_6et1j"]
 [ext_resource type="Script" uid="uid://cb8k8j6kmrrjl" path="res://levels/level_manager.gd" id="7_etqu2"]
+[ext_resource type="PackedScene" uid="uid://v4nwoyfaks2" path="res://enemys/bossi.tscn" id="9_etqu2"]
 
 [node name="main" type="Node2D"]
 script = ExtResource("1_l8qe7")
@@ -20,6 +21,8 @@ layer = -10
 
 [node name="Player" parent="." instance=ExtResource("3_ifaiv")]
 position = Vector2(575, 636)
+
+[node name="Boss" parent="." instance=ExtResource("9_etqu2")]
 
 [node name="Label" type="Label" parent="."]
 offset_right = 40.0

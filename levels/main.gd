@@ -2,6 +2,7 @@ extends Node2D
 
 @export var alien_scene: PackedScene
 @export var powerup_scene: PackedScene
+var boss_scene: PackedScene = preload("res://enemys/bossi.tscn")
 
 var alien_speed: float = 50.0
 
@@ -208,13 +209,32 @@ func _move_floating_aliens(delta: float) -> void:
 		alien.set_meta("float_velocity", velocity)
 
 
+
 func _spawn_boss(level_number: int) -> void:
-	var boss_scene: PackedScene = alien_scenes.pick_random()
+	print("=== BOSS SPAWN START ===")
+	print("Level number: ", level_number)
+	print("Boss scene: ", boss_scene)
+
+	if boss_scene == null:
+		push_error("Boss Scene puuttuu main-noden Inspectorista.")
+		level_label.text = "BOSS SCENE MISSING"
+		return
+
 	var boss = boss_scene.instantiate()
+
+	if boss == null:
+		push_error("Bossia ei voitu instantiate.")
+		level_label.text = "BOSS INSTANCE FAILED"
+		return
+
+	print("Boss created: ", boss)
+	print("Boss class: ", boss.get_class())
 
 	boss.name = "Boss_Level_" + str(level_number)
 	boss.position = Vector2(get_viewport_rect().size.x / 2.0, 120.0)
 	boss.scale = Vector2(4.0, 4.0)
+	boss.visible = true
+	boss.modulate = Color(1, 1, 1, 1)
 
 	boss.set_meta("is_boss", true)
 	boss.set_meta("boss_direction", 1)
@@ -233,7 +253,10 @@ func _spawn_boss(level_number: int) -> void:
 	boss_health_bar.max_value = boss_max_health
 	boss_health_bar.value = boss_health
 
-
+	print("Boss added to tree: ", boss.is_inside_tree())
+	print("Boss in aliens group: ", boss.is_in_group("aliens"))
+	print("Boss position: ", boss.position)
+	print("=== BOSS SPAWN END ===")
 func _move_boss(delta: float) -> void:
 	if current_boss == null:
 		return
@@ -714,11 +737,11 @@ func show_game_over() -> void:
 	tween.set_trans(Tween.TRANS_SINE)
 	tween.set_ease(Tween.EASE_IN_OUT)
 
-	tween.tween_property(game_over_background, "color", Color(0.30, 0.0, 0.0, 0.96), 1.35)
+	tween.tween_property(game_over_background, "color", Color(0.12, 0.0, 0.0, 1.0), 1.35)
 	tween.tween_property(game_over_container, "modulate", Color(1, 1, 1, 1), 1.15)
 	tween.tween_property(game_over_container, "scale", Vector2(1.0, 1.0), 1.15)
 	for line in game_over_scanlines:
-		tween.tween_property(line, "color", Color(1.0, 0.0, 0.0, 0.10), 1.25)
+		tween.tween_property(line, "color", Color(1.0, 0.0, 0.0, 0.06), 1.25)
 	tween.tween_property(game_over_flash, "color", Color(1.0, 0.0, 0.0, 0.0), 0.35)
 	tween.tween_property(game_over_title_label, "position:x", game_over_title_label.position.x + 8.0, 0.20)
 	
