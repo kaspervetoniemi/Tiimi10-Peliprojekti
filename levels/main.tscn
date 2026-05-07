@@ -4,9 +4,9 @@
 [ext_resource type="PackedScene" uid="uid://sfepecx08qmi" path="res://power_up.tscn" id="2_6et1j"]
 [ext_resource type="PackedScene" uid="uid://c3nf5w5ubh41j" path="res://Scenes/star_background.tscn" id="3_5k4jt"]
 [ext_resource type="PackedScene" uid="uid://dgbdt268yye5v" path="res://player/player.tscn" id="3_ifaiv"]
-[ext_resource type="FontFile" uid="uid://cvjukaggnp2fx" path="res://fonts/PixelOperator8-Bold.ttf" id="4_ifaiv"]
+[ext_resource type="FontFile" uid="uid://b7q1p1hbudn0t" path="res://fonts/PixelOperator8-Bold.ttf" id="4_ifaiv"]
 [ext_resource type="Script" uid="uid://q10jvohbnlaa" path="res://levels/label.gd" id="5_5k4jt"]
-[ext_resource type="PackedScene" uid="uid://b22u24ixvl1d2" path="res://Scenes/scene_transition.tscn" id="7_6et1j"]
+[ext_resource type="PackedScene" path="res://Scenes/scene_transition.tscn" id="7_6et1j"]
 [ext_resource type="Script" uid="uid://cb8k8j6kmrrjl" path="res://levels/level_manager.gd" id="7_etqu2"]
 
 [node name="main" type="Node2D"]
