@@ -113,9 +113,13 @@ func _clear_powerup() -> void:
 
 
 func ota_vahinkoa() -> void:
-	print("Pelaajaan osui!")
-	Global.score=0
-	get_tree().reload_current_scene()
+	print("PLAYER HIT")
+	var main_scene = get_tree().current_scene
+
+	if main_scene != null and main_scene.has_method("show_game_over"):
+		main_scene.show_game_over()
+	else:
+		get_tree().reload_current_scene()
 
 
 func take_damage(_amount: int = 1) -> void:

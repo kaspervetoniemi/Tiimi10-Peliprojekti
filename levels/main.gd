@@ -12,6 +12,14 @@ var boss_max_health: int = 0
 var is_changing_level: bool = false
 
 var shoot_timer: float = 0.0
+var is_game_over: bool = false
+
+var game_over_layer: CanvasLayer
+var game_over_background: ColorRect
+var game_over_container: VBoxContainer
+var game_over_title_label: Label
+var game_over_score_label: Label
+var game_over_restart_button: Button
 
 var alien_scenes: Array[PackedScene] = [
 	preload("res://enemys/rapu.tscn"),
@@ -39,6 +47,8 @@ func _ready() -> void:
 	boss_health_bar.visible = false
 	level_intro_label.visible = false
 
+	_create_game_over_ui()
+	
 	_start_music()
 	level_manager.start_game()
 
@@ -51,6 +61,8 @@ func _start_music() -> void:
 
 
 func _process(delta: float) -> void:
+	if is_game_over:
+		return
 	var aliens: Array = get_tree().get_nodes_in_group("aliens")
 
 	if aliens.size() == 0 and not is_changing_level:
@@ -541,3 +553,193 @@ func show_powerup_text(powerup_type: String) -> void:
 
 	await powerup_tween.finished
 	text_label.queue_free()
+
+func _create_game_over_ui() -> void:
+	game_over_layer = CanvasLayer.new()
+	game_over_layer.layer = 200
+	game_over_layer.visible = false
+	add_child(game_over_layer)
+
+	game_over_background = ColorRect.new()
+	game_over_background.color = Color(0, 0, 0, 0.0)
+	game_over_background.set_anchors_preset(Control.PRESET_FULL_RECT)
+	game_over_layer.add_child(game_over_background)
+
+	game_over_container = VBoxContainer.new()
+	game_over_container.alignment = BoxContainer.ALIGNMENT_CENTER
+	game_over_container.add_theme_constant_override("separation", 16)
+	game_over_container.size = Vector2(500, 220)
+	game_over_container.position = Vector2(
+		get_viewport_rect().size.x / 2.0 - game_over_container.size.x / 2.0,
+		get_viewport_rect().size.y / 2.0 - game_over_container.size.y / 2.0
+	)
+	game_over_container.modulate = Color(1, 1, 1, 0)
+	game_over_container.scale = Vector2(0.92, 0.92)
+	game_over_layer.add_child(game_over_container)
+
+	var game_font = level_intro_label.get_theme_font("font")
+
+	game_over_title_label = Label.new()
+	game_over_title_label.text = "GAME OVER"
+	game_over_title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	game_over_title_label.add_theme_color_override("font_color", Color("#FFF6D5"))
+	game_over_title_label.add_theme_color_override("font_outline_color", Color.BLACK)
+	game_over_title_label.add_theme_constant_override("outline_size", 2)
+	if game_font != null:
+		game_over_title_label.add_theme_font_override("font", game_font)
+	game_over_title_label.add_theme_font_size_override("font_size", 34)
+	game_over_container.add_child(game_over_title_label)
+
+	game_over_score_label = Label.new()
+	game_over_score_label.text = "SCORE: 0"
+	game_over_score_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	game_over_score_label.add_theme_color_override("font_color", Color.WHITE)
+	game_over_score_label.add_theme_color_override("font_outline_color", Color.BLACK)
+	game_over_score_label.add_theme_constant_override("outline_size", 2)
+	if game_font != null:
+		game_over_score_label.add_theme_font_override("font", game_font)
+	game_over_score_label.add_theme_font_size_override("font_size", 24)
+	game_over_container.add_child(game_over_score_label)
+
+	game_over_restart_button = Button.new()
+	game_over_restart_button.text = "RESTART"
+	game_over_restart_button.custom_minimum_size = Vector2(230, 46)
+	game_over_restart_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+
+	if game_font != null:
+		game_over_restart_button.add_theme_font_override("font", game_font)
+
+	game_over_restart_button.add_theme_font_size_override("font_size", 24)
+	game_over_restart_button.add_theme_color_override("font_color", Color.WHITE)
+	game_over_restart_button.add_theme_color_override("font_hover_color", Color.WHITE)
+	game_over_restart_button.add_theme_color_override("font_pressed_color", Color.WHITE)
+	game_over_restart_button.add_theme_color_override("font_focus_color", Color.WHITE)
+	game_over_restart_button.add_theme_color_override("font_outline_color", Color.BLACK)
+	game_over_restart_button.add_theme_constant_override("outline_size", 2)
+
+	var star_wars_yellow := Color("#FFE81F")
+	var hover_yellow := Color("#FFF36A")
+	var pressed_yellow := Color("#D6B800")
+
+	var normal_style := StyleBoxFlat.new()
+	normal_style.bg_color = star_wars_yellow
+	normal_style.content_margin_left = 22
+	normal_style.content_margin_right = 22
+	normal_style.content_margin_top = 6
+	normal_style.content_margin_bottom = 6
+	normal_style.border_width_left = 2
+	normal_style.border_width_right = 2
+	normal_style.border_width_top = 2
+	normal_style.border_width_bottom = 2
+	normal_style.border_color = Color("#A88700")
+
+	var hover_style := StyleBoxFlat.new()
+	hover_style.bg_color = hover_yellow
+	hover_style.content_margin_left = 22
+	hover_style.content_margin_right = 22
+	hover_style.content_margin_top = 6
+	hover_style.content_margin_bottom = 6
+	hover_style.border_width_left = 2
+	hover_style.border_width_right = 2
+	hover_style.border_width_top = 2
+	hover_style.border_width_bottom = 2
+	hover_style.border_color = Color("#FFE81F")
+
+	var pressed_style := StyleBoxFlat.new()
+	pressed_style.bg_color = pressed_yellow
+	pressed_style.content_margin_left = 22
+	pressed_style.content_margin_right = 22
+	pressed_style.content_margin_top = 6
+	pressed_style.content_margin_bottom = 6
+	pressed_style.border_width_left = 2
+	pressed_style.border_width_right = 2
+	pressed_style.border_width_top = 2
+	pressed_style.border_width_bottom = 2
+	pressed_style.border_color = Color("#6F5D00")
+
+	game_over_restart_button.add_theme_stylebox_override("normal", normal_style)
+	game_over_restart_button.add_theme_stylebox_override("hover", hover_style)
+	game_over_restart_button.add_theme_stylebox_override("pressed", pressed_style)
+	game_over_restart_button.pressed.connect(_on_restart_pressed)
+
+	game_over_container.add_child(game_over_restart_button)
+
+func show_game_over() -> void:
+	if is_game_over:
+		return
+
+	is_game_over = true
+
+	_clear_enemy_bullets()
+
+	if music_player != null:
+		music_player.stop()
+
+	game_over_score_label.text = "SCORE: " + str(Global.score)
+
+	game_over_layer.visible = true
+	game_over_background.color = Color(0, 0, 0, 0.0)
+	game_over_container.modulate = Color(1, 1, 1, 0)
+	game_over_container.scale = Vector2(0.92, 0.92)
+
+	var tween := create_tween()
+	tween.set_parallel(true)
+	tween.set_trans(Tween.TRANS_SINE)
+	tween.set_ease(Tween.EASE_IN_OUT)
+
+	tween.tween_property(game_over_background, "color", Color(0, 0, 0, 0.72), 0.30)
+	tween.tween_property(game_over_container, "modulate", Color(1, 1, 1, 1), 0.30)
+	tween.tween_property(game_over_container, "scale", Vector2(1.0, 1.0), 0.30)
+
+	await tween.finished
+	_start_game_over_pulse()
+	game_over_restart_button.grab_focus()
+
+
+func _on_restart_pressed() -> void:
+	Global.score = 0
+
+	var transition = get_node_or_null("/root/SceneTransition")
+	var scene_path := get_tree().current_scene.scene_file_path
+
+	if transition != null and transition.has_method("transition_to_scene") and scene_path != "":
+		transition.transition_to_scene(scene_path)
+	else:
+		get_tree().reload_current_scene()
+		
+func _start_game_over_pulse() -> void:
+	var title_pulse := create_tween()
+	title_pulse.set_loops()
+	title_pulse.set_trans(Tween.TRANS_SINE)
+	title_pulse.set_ease(Tween.EASE_IN_OUT)
+	
+	title_pulse.tween_property(
+		game_over_title_label,
+		"modulate",
+		Color(1.0, 0.92, 0.45, 1.0),
+		1.0
+	)
+	title_pulse.tween_property(
+		game_over_title_label,
+		"modulate",
+		Color(1.0, 1.0, 1.0, 1.0),
+		1.0
+	)
+
+	var button_pulse := create_tween()
+	button_pulse.set_loops()
+	button_pulse.set_trans(Tween.TRANS_SINE)
+	button_pulse.set_ease(Tween.EASE_IN_OUT)
+
+	button_pulse.tween_property(
+		game_over_restart_button,
+		"modulate",
+		Color(1.0, 0.96, 0.55, 1.0),
+		1.0
+	)
+	button_pulse.tween_property(
+		game_over_restart_button,
+		"modulate",
+		Color(1.0, 1.0, 1.0, 1.0),
+		1.0
+	)
