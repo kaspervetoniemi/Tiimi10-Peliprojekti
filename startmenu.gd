@@ -316,13 +316,8 @@ func _animate_top_enemies() -> void:
 	var enemy_1_start := enemy_1.position
 	var enemy_2_start := enemy_2.position
 
-	var tween := create_tween()
-	tween.set_loops()
-	tween.set_trans(Tween.TRANS_SINE)
-	tween.set_ease(Tween.EASE_IN_OUT)
-
 	while true:
-		tween = create_tween()
+		var tween = create_tween()
 		tween.set_parallel(true)
 		tween.set_trans(Tween.TRANS_SINE)
 		tween.set_ease(Tween.EASE_IN_OUT)

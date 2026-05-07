@@ -1,14 +1,19 @@
-[gd_scene load_steps=10 format=3 uid="uid://biwoh4swc430q"]
+[gd_scene load_steps=15 format=3 uid="uid://biwoh4swc430q"]
 
 [ext_resource type="Script" uid="uid://coxht0imgirfe" path="res://levels/main.gd" id="1_l8qe7"]
 [ext_resource type="PackedScene" uid="uid://sfepecx08qmi" path="res://power_up.tscn" id="2_6et1j"]
 [ext_resource type="PackedScene" uid="uid://c3nf5w5ubh41j" path="res://Scenes/star_background.tscn" id="3_5k4jt"]
 [ext_resource type="PackedScene" uid="uid://dgbdt268yye5v" path="res://player/player.tscn" id="3_ifaiv"]
-[ext_resource type="FontFile" uid="uid://cvjukaggnp2fx" path="res://fonts/PixelOperator8-Bold.ttf" id="4_ifaiv"]
+[ext_resource type="FontFile" uid="uid://b7q1p1hbudn0t" path="res://fonts/PixelOperator8-Bold.ttf" id="4_ifaiv"]
 [ext_resource type="Script" uid="uid://q10jvohbnlaa" path="res://levels/label.gd" id="5_5k4jt"]
 [ext_resource type="PackedScene" uid="uid://b22u24ixvl1d2" path="res://Scenes/scene_transition.tscn" id="7_6et1j"]
 [ext_resource type="Script" uid="uid://cb8k8j6kmrrjl" path="res://levels/level_manager.gd" id="7_etqu2"]
 [ext_resource type="PackedScene" uid="uid://v4nwoyfaks2" path="res://enemys/bossi.tscn" id="9_etqu2"]
+[ext_resource type="Script" uid="uid://c5qxuk4etfbb6" path="res://levels/audio_menu.gd" id="10_6yxbg"]
+[ext_resource type="Texture2D" uid="uid://b2hcev7d370xy" path="res://grafiikka/musicOn.png" id="11_6yxbg"]
+[ext_resource type="Texture2D" uid="uid://cyc8m3wxsvg2o" path="res://grafiikka/musicOff.png" id="12_4fc0e"]
+[ext_resource type="Texture2D" uid="uid://chejcd080qk4g" path="res://grafiikka/audioOn.png" id="13_21ko3"]
+[ext_resource type="Texture2D" uid="uid://dmh71d0ps00li" path="res://grafiikka/audioOff.png" id="14_s07ge"]
 
 [node name="main" type="Node2D"]
 script = ExtResource("1_l8qe7")
@@ -18,6 +23,7 @@ powerup_scene = ExtResource("2_6et1j")
 layer = -10
 
 [node name="StarBackground" parent="CanvasLayer" instance=ExtResource("3_5k4jt")]
+mouse_filter = 2
 
 [node name="Player" parent="." instance=ExtResource("3_ifaiv")]
 position = Vector2(575, 636)
@@ -57,4 +63,46 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 color = Color(0, 0, 0, 1)
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="AudioMenu" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("10_6yxbg")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/AudioMenu"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -40.0
+offset_bottom = 40.0
+grow_horizontal = 0
+mouse_filter = 2
+
+[node name="MusicBtn" type="TextureButton" parent="UI/AudioMenu/HBoxContainer"]
+layout_mode = 2
+focus_mode = 0
+mouse_force_pass_scroll_events = false
+toggle_mode = true
+texture_normal = ExtResource("11_6yxbg")
+texture_pressed = ExtResource("12_4fc0e")
+
+[node name="SFXBtn" type="TextureButton" parent="UI/AudioMenu/HBoxContainer"]
+layout_mode = 2
+focus_mode = 0
+mouse_force_pass_scroll_events = false
+toggle_mode = true
+texture_normal = ExtResource("13_21ko3")
+texture_pressed = ExtResource("14_s07ge")
+
+[connection signal="toggled" from="UI/AudioMenu/HBoxContainer/MusicBtn" to="UI/AudioMenu" method="_on_music_btn_toggled"]
+[connection signal="toggled" from="UI/AudioMenu/HBoxContainer/SFXBtn" to="UI/AudioMenu" method="_on_sfx_btn_toggled"]

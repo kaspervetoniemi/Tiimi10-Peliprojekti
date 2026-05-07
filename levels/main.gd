@@ -65,6 +65,7 @@ func _ready() -> void:
 func _start_music() -> void:
 	music_player.stream = bg_music
 	music_player.volume_db = -15.0
+	music_player.bus = "Music"
 	add_child(music_player)
 	music_player.play()
 
@@ -598,7 +599,7 @@ func try_spawn_powerup(spawn_position: Vector2) -> void:
 	var possible_types := ["rapid", "shotgun"]
 	powerup.powerup_type = possible_types.pick_random()
 
-	add_child(powerup)
+	add_child.call_deferred(powerup)
 
 func show_powerup_text(powerup_type: String) -> void:
 	var text_label := Label.new()

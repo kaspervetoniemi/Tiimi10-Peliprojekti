@@ -12,6 +12,7 @@ var audio_player = AudioStreamPlayer.new()
 func _ready() -> void:
 	audio_player.stream = explosion_sound
 	audio_player.volume_db = -15.0
+	audio_player.bus = "SFX"
 	add_child(audio_player)
 
 
