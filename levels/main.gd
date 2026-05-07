@@ -17,6 +17,7 @@ var boss_special_timer: float = 3.0
 var boss_warning_active: bool = false
 var boss_move_timer: float = 0.0
 var boss_target_position: Vector2 = Vector2.ZERO
+var boss_intro_active: bool = false
 var is_game_over: bool = false
 
 var game_over_layer: CanvasLayer
@@ -67,10 +68,35 @@ func _start_music() -> void:
 	add_child(music_player)
 	music_player.play()
 
+	boss_health_bar.visible = false
+	boss_health_bar.min_value = 0
+
+	boss_health_bar.size = Vector2(460, 24)
+	boss_health_bar.position = Vector2(
+		get_viewport_rect().size.x / 2.0 - boss_health_bar.size.x / 2.0,
+		18.0
+	)
+
+	var background_style := StyleBoxFlat.new()
+	background_style.bg_color = Color(0.05, 0.0, 0.0, 0.92)
+	background_style.border_width_left = 2
+	background_style.border_width_right = 2
+	background_style.border_width_top = 2
+	background_style.border_width_bottom = 2
+	background_style.border_color = Color("#FFE81F")
+
+	var fill_style := StyleBoxFlat.new()
+	fill_style.bg_color = Color("#FF3030")
+
+	boss_health_bar.add_theme_stylebox_override("background", background_style)
+	boss_health_bar.add_theme_stylebox_override("fill", fill_style)
 
 func _process(delta: float) -> void:
 	if is_game_over:
 		_move_game_over_scanlines(delta)
+		return
+		
+	if boss_intro_active:
 		return
 	var aliens: Array = get_tree().get_nodes_in_group("aliens")
 
@@ -97,6 +123,7 @@ func _on_level_started(level_number: int, is_boss_level: bool) -> void:
 	current_boss = null
 	boss_health_bar.visible = false
 	level_intro_label.visible = false
+	_style_boss_health_bar()
 	boss_special_timer = randf_range(2.5, 4.0)
 	boss_warning_active = false
 
@@ -110,11 +137,10 @@ func _on_level_started(level_number: int, is_boss_level: bool) -> void:
 
 	if is_boss_level:
 		level_label.text = "LEVEL " + str(level_number) + " - BOSS"
-		_spawn_boss(level_number)
+		_start_boss_intro(level_number)
 	else:
 		level_label.text = "LEVEL " + str(level_number)
 		_spawn_floating_aliens()
-
 
 func _spawn_floating_aliens() -> void:
 	var enemy_count: int = level_manager.get_enemy_count()
@@ -257,7 +283,7 @@ func _spawn_boss(level_number: int) -> void:
 	boss_target_position = boss.position
 	boss_move_timer = randf_range(0.6, 1.4)
 
-	boss_health_bar.visible = true
+	boss_health_bar.visible = false
 	boss_health_bar.min_value = 0
 	boss_health_bar.max_value = boss_max_health
 	boss_health_bar.value = boss_health
@@ -419,13 +445,22 @@ func damage_boss(amount: int) -> void:
 	boss_health -= amount
 	boss_health = max(boss_health, 0)
 
-	boss_health_bar.value = boss_health
+	var bar_tween := create_tween()
+	bar_tween.set_trans(Tween.TRANS_SINE)
+	bar_tween.set_ease(Tween.EASE_OUT)
+	bar_tween.tween_property(boss_health_bar, "value", boss_health, 0.18)
+
+	# Pieni osumavälähdys
+	var flash_tween := create_tween()
+	flash_tween.set_trans(Tween.TRANS_SINE)
+	flash_tween.set_ease(Tween.EASE_IN_OUT)
+	flash_tween.tween_property(boss_health_bar, "modulate", Color(1.3, 1.0, 1.0, 1.0), 0.08)
+	flash_tween.tween_property(boss_health_bar, "modulate", Color(1, 1, 1, 1), 0.12)
 
 	if boss_health <= 0:
 		current_boss.queue_free()
 		current_boss = null
 		boss_health_bar.visible = false
-
 
 func _clear_aliens() -> void:
 	var aliens: Array = get_tree().get_nodes_in_group("aliens")
@@ -489,7 +524,7 @@ func _start_level_clear_sequence() -> void:
 	await fade_out.finished
 
 	level_intro_label.visible = false
-
+	_style_boss_health_bar()
 	level_manager.next_level()
 
 
@@ -1024,3 +1059,128 @@ func _show_boss_warning(warning_text: String) -> void:
 
 	warning_label.queue_free()
 	boss_warning_active = false
+
+func _start_boss_intro(level_number: int) -> void:
+	boss_intro_active = true
+
+	var warning_label := Label.new()
+	warning_label.text = "WARNING\nBOSS APPROACHING"
+	warning_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	warning_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+
+	warning_label.add_theme_color_override("font_color", Color("#FF3030"))
+	warning_label.add_theme_color_override("font_outline_color", Color.BLACK)
+	warning_label.add_theme_constant_override("outline_size", 3)
+
+	var game_font = level_intro_label.get_theme_font("font")
+	if game_font != null:
+		warning_label.add_theme_font_override("font", game_font)
+
+	warning_label.add_theme_font_size_override("font_size", 34)
+
+	var screen_size: Vector2 = get_viewport_rect().size
+	warning_label.size = Vector2(760, 180)
+	warning_label.position = Vector2(
+		screen_size.x / 2.0 - warning_label.size.x / 2.0,
+		screen_size.y / 2.0 - warning_label.size.y / 2.0
+	)
+
+	warning_label.modulate = Color(1, 1, 1, 0)
+	warning_label.scale = Vector2(0.85, 0.85)
+	add_child(warning_label)
+
+	var intro_tween := create_tween()
+	intro_tween.set_trans(Tween.TRANS_SINE)
+	intro_tween.set_ease(Tween.EASE_IN_OUT)
+
+	intro_tween.tween_property(warning_label, "modulate", Color(1, 1, 1, 1), 0.45)
+	intro_tween.parallel().tween_property(warning_label, "scale", Vector2(1.0, 1.0), 0.45)
+
+	intro_tween.tween_interval(0.65)
+
+	intro_tween.tween_property(warning_label, "modulate", Color(1, 0.15, 0.15, 1), 0.16)
+	intro_tween.tween_property(warning_label, "modulate", Color(1, 1, 1, 1), 0.16)
+	intro_tween.tween_property(warning_label, "modulate", Color(1, 0.15, 0.15, 1), 0.16)
+	intro_tween.tween_property(warning_label, "modulate", Color(1, 1, 1, 1), 0.16)
+
+	intro_tween.tween_interval(0.35)
+
+	intro_tween.tween_property(warning_label, "modulate", Color(1, 1, 1, 0), 0.4)
+	intro_tween.parallel().tween_property(warning_label, "scale", Vector2(1.15, 1.15), 0.4)
+
+	await intro_tween.finished
+
+	warning_label.queue_free()
+
+	_spawn_boss(level_number)
+	_animate_boss_health_bar_in()
+
+	boss_intro_active = false
+func _animate_boss_health_bar_in() -> void:
+	boss_health_bar.visible = true
+	boss_health_bar.modulate = Color(1, 1, 1, 0)
+	boss_health_bar.scale = Vector2(0.75, 1.0)
+
+	var health_tween := create_tween()
+	health_tween.set_parallel(true)
+	health_tween.set_trans(Tween.TRANS_SINE)
+	health_tween.set_ease(Tween.EASE_IN_OUT)
+
+	health_tween.tween_property(boss_health_bar, "modulate", Color(1, 1, 1, 1), 0.45)
+	health_tween.tween_property(boss_health_bar, "scale", Vector2(1.0, 1.0), 0.45)
+
+	health_tween.set_parallel(true)
+	health_tween.set_trans(Tween.TRANS_SINE)
+	health_tween.set_ease(Tween.EASE_IN_OUT)
+
+	health_tween.tween_property(boss_health_bar, "modulate", Color(1, 1, 1, 1), 0.45)
+	health_tween.tween_property(boss_health_bar, "scale", Vector2(1.0, 1.0), 0.45)
+
+func _style_boss_health_bar() -> void:
+	boss_health_bar.visible = false
+	boss_health_bar.show_percentage = false
+	boss_health_bar.min_value = 0
+	boss_health_bar.max_value = 100
+	boss_health_bar.value = 100
+
+	# Koko ja sijainti
+	boss_health_bar.custom_minimum_size = Vector2(420, 22)
+	boss_health_bar.size = Vector2(420, 22)
+	boss_health_bar.position = Vector2(
+		get_viewport_rect().size.x / 2.0 - 210.0,
+		28.0
+	)
+
+	# Taustaboxi
+	var background_style := StyleBoxFlat.new()
+	background_style.bg_color = Color("#140404")
+	background_style.border_color = Color("#6A1010")
+	background_style.border_width_left = 2
+	background_style.border_width_right = 2
+	background_style.border_width_top = 2
+	background_style.border_width_bottom = 2
+	background_style.corner_radius_top_left = 4
+	background_style.corner_radius_top_right = 4
+	background_style.corner_radius_bottom_left = 4
+	background_style.corner_radius_bottom_right = 4
+
+	# Täyttö
+	var fill_style := StyleBoxFlat.new()
+	fill_style.bg_color = Color("#D62828")
+	fill_style.border_color = Color("#FFE81F")
+	fill_style.border_width_left = 1
+	fill_style.border_width_right = 1
+	fill_style.border_width_top = 1
+	fill_style.border_width_bottom = 1
+	fill_style.corner_radius_top_left = 3
+	fill_style.corner_radius_top_right = 3
+	fill_style.corner_radius_bottom_left = 3
+	fill_style.corner_radius_bottom_right = 3
+
+	boss_health_bar.add_theme_stylebox_override("background", background_style)
+	boss_health_bar.add_theme_stylebox_override("fill", fill_style)
+
+	boss_health_bar.add_theme_color_override("font_color", Color.WHITE)
+	boss_health_bar.add_theme_color_override("font_outline_color", Color.BLACK)
+	boss_health_bar.add_theme_constant_override("outline_size", 2)
+	
