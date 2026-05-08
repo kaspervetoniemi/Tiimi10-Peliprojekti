@@ -81,7 +81,7 @@ func _ready() -> void:
 	level_manager.start_game()
 	
 	victory_sound.stream = victory
-	music_player.volume_db = -35.0
+	music_player.volume_db = -27.5
 	add_child(victory_sound)
 
 
