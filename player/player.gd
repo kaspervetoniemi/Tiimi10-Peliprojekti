@@ -33,6 +33,7 @@ func _ready() -> void:
 	
 	death_sound.stream = funeral_sound
 	death_sound.volume_db = -20.0
+	death_sound.bus = "SFX"
 	add_child(death_sound)
 
 

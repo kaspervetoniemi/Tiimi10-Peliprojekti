@@ -4,8 +4,6 @@
 [ext_resource type="Shader" uid="uid://drm3nhpdovppg" path="res://startmenu.gdshader" id="2_kpj2f"]
 [ext_resource type="FontFile" uid="uid://b7q1p1hbudn0t" path="res://fonts/PixelOperator8-Bold.ttf" id="2_vv751"]
 [ext_resource type="Texture2D" uid="uid://tpgxuvxm6a5" path="res://grafiikka/avaruusalus-side.png" id="3_kpj2f"]
-[ext_resource type="Texture2D" uid="uid://gkf4ktva3flg" path="res://grafiikka/avaruusalus-side.png" id="3_kpj2f"]
-
 [ext_resource type="Texture2D" uid="uid://bmmqnfmsv0ivw" path="res://grafiikka/mustekala.png" id="4_fopwh"]
 [ext_resource type="Texture2D" uid="uid://dkcagtbrec6pw" path="res://grafiikka/turska.png" id="5_qhhne"]
 [ext_resource type="Texture2D" uid="uid://c75upgwgoj7o7" path="res://grafiikka/rapu.png" id="6_qhhne"]
@@ -174,3 +172,4 @@ horizontal_alignment = 1
 stream = ExtResource("8_j1r8h")
 volume_db = -17.174
 autoplay = true
+bus = &"Music"

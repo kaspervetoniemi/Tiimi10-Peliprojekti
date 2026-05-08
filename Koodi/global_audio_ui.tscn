@@ -1,0 +1,44 @@
+[gd_scene load_steps=6 format=3 uid="uid://dyhbb25jvng2w"]
+
+[ext_resource type="Script" uid="uid://ci53coj245a8b" path="res://Koodi/global_audio_ui.gd" id="1_1qat1"]
+[ext_resource type="Texture2D" uid="uid://b2hcev7d370xy" path="res://grafiikka/musicOn.png" id="2_5ak88"]
+[ext_resource type="Texture2D" uid="uid://cyc8m3wxsvg2o" path="res://grafiikka/musicOff.png" id="3_phw7d"]
+[ext_resource type="Texture2D" uid="uid://chejcd080qk4g" path="res://grafiikka/audioOn.png" id="4_r7m84"]
+[ext_resource type="Texture2D" uid="uid://dmh71d0ps00li" path="res://grafiikka/audioOff.png" id="5_2f6a3"]
+
+[node name="GlobalAudioUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_1qat1")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = 100
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -40.0
+offset_bottom = 40.0
+grow_horizontal = 0
+
+[node name="MusicBtn" type="TextureButton" parent="CanvasLayer/HBoxContainer"]
+layout_mode = 2
+focus_mode = 0
+toggle_mode = true
+texture_normal = ExtResource("2_5ak88")
+texture_pressed = ExtResource("3_phw7d")
+
+[node name="SFXBtn" type="TextureButton" parent="CanvasLayer/HBoxContainer"]
+layout_mode = 2
+focus_mode = 0
+toggle_mode = true
+texture_normal = ExtResource("4_r7m84")
+texture_pressed = ExtResource("5_2f6a3")
+
+[connection signal="toggled" from="CanvasLayer/HBoxContainer/MusicBtn" to="." method="_on_music_btn_toggled"]
+[connection signal="toggled" from="CanvasLayer/HBoxContainer/SFXBtn" to="." method="_on_sfx_btn_toggled"]
