@@ -53,6 +53,10 @@ var alien_scenes: Array[PackedScene] = [
 var bg_music = preload("res://sounds/backgroundmusic.wav")
 var music_player: AudioStreamPlayer = AudioStreamPlayer.new()
 
+var victory = preload("res://sounds/victory.wav")
+var victory_sound: AudioStreamPlayer = AudioStreamPlayer.new()
+
+
 @onready var level_manager = $LevelManager
 @onready var player: Node2D = $Player
 @onready var level_label: Label = $Label
@@ -75,6 +79,10 @@ func _ready() -> void:
 	
 	_start_music()
 	level_manager.start_game()
+	
+	victory_sound.stream = victory
+	music_player.volume_db = -35.0
+	add_child(victory_sound)
 
 
 func _start_music() -> void:
@@ -552,6 +560,7 @@ func _on_game_completed() -> void:
 	level_intro_label.visible = false
 	_clear_enemy_bullets()
 	set_process(false)
+	victory_sound.play()
 
 
 func _apply_background_for_level(level_number: int, is_boss_level: bool) -> void:
