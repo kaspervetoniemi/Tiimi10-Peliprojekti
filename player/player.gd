@@ -28,10 +28,12 @@ func _ready() -> void:
 
 	audio_player.stream = laser_sound
 	audio_player.volume_db = -15.0
+	audio_player.bus = "SFX"
 	add_child(audio_player)
 	
 	death_sound.stream = funeral_sound
 	death_sound.volume_db = -20.0
+	death_sound.bus = "SFX"
 	add_child(death_sound)
 
 
