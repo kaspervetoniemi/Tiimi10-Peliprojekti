@@ -180,7 +180,7 @@ var levels: Dictionary = {
 
 
 func start_game() -> void:
-	current_level = 15
+	current_level = 1
 	level_started.emit(current_level, is_boss_level())
 
 
