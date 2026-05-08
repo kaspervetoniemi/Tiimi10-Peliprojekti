@@ -376,11 +376,11 @@ func _setup_enemies() -> void:
 
 	var screen_size := get_viewport_rect().size
 
-	enemy_1.position = Vector2(screen_size.x / 2 - 220, 208)
-	enemy_2.position = Vector2(screen_size.x / 2 + 70, 209)
+	enemy_1.position = Vector2(screen_size.x / 2 - 220, 170)
+	enemy_2.position = Vector2(screen_size.x / 2 + 70, 171)
 
 	# Vihollinen credits-tekstin yläpuolelle
-	enemy_3.position = Vector2(screen_size.x / 2 - 10, 355)
+	enemy_3.position = Vector2(screen_size.x / 2 - 10, 315)
 
 	enemy_1.modulate = Color(1, 1, 1, 0.75)
 	enemy_2.modulate = Color(1, 1, 1, 0.75)
