@@ -3,6 +3,7 @@ extends Control
 @export var game_scene_path: String = "res://levels/main.tscn"
 
 @onready var start_button: Button = $CenterContainer/Menubox/StartButton
+@onready var exit_button: Button = $CenterContainer/Menubox/ExitButton
 @onready var title_label: Label = $CenterContainer/Menubox/TitleLabel
 @onready var credits_label: Label = $CenterContainer/Menubox/CreditsLabel
 @onready var scene_transition = get_node_or_null("/root/SceneTransition")
@@ -30,9 +31,11 @@ func _ready() -> void:
 	randomize()
 
 	start_button.pressed.connect(_on_start_pressed)
-
+	exit_button.pressed.connect(_on_exit_button_pressed)
+   
 	_style_title()
 	_style_start_button()
+	_style_exit_button()
 	_style_credits()
 
 	_setup_background_effects()
@@ -52,6 +55,10 @@ func _on_start_pressed() -> void:
 		get_tree().change_scene_to_file(game_scene_path)
 
 
+func _on_exit_button_pressed() -> void:
+	get_tree().quit()
+
+
 func _style_title() -> void:
 	title_label.add_theme_color_override("font_color", Color("#FFF6D5"))
 	title_label.add_theme_color_override("font_outline_color", Color.BLACK)
@@ -62,6 +69,79 @@ func _style_credits() -> void:
 	credits_label.add_theme_color_override("font_color", Color("#FFFFFF"))
 	credits_label.add_theme_color_override("font_outline_color", Color.BLACK)
 	credits_label.add_theme_constant_override("outline_size", 2)
+
+
+func _style_exit_button() -> void:
+	exit_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	exit_button.custom_minimum_size = Vector2(230, 46)
+
+	exit_button.add_theme_font_size_override("font_size", 24)
+
+	exit_button.add_theme_color_override("font_color", Color.WHITE)
+	exit_button.add_theme_color_override("font_hover_color", Color.WHITE)
+	exit_button.add_theme_color_override("font_pressed_color", Color.WHITE)
+	exit_button.add_theme_color_override("font_focus_color", Color.WHITE)
+	exit_button.add_theme_color_override("font_disabled_color", Color.WHITE)
+
+	exit_button.add_theme_color_override("font_outline_color", Color.BLACK)
+	exit_button.add_theme_constant_override("outline_size", 3)
+
+	var star_wars_yellow := Color("#FFE81F")
+	var hover_yellow := Color("#FFF36A")
+	var pressed_yellow := Color("#D6B800")
+
+	var normal_style := StyleBoxFlat.new()
+	normal_style.bg_color = star_wars_yellow
+	normal_style.content_margin_left = 22
+	normal_style.content_margin_right = 22
+	normal_style.content_margin_top = 6
+	normal_style.content_margin_bottom = 6
+	normal_style.border_width_left = 2
+	normal_style.border_width_right = 2
+	normal_style.border_width_top = 2
+	normal_style.border_width_bottom = 2
+	normal_style.border_color = Color("#A88700")
+
+	var hover_style := StyleBoxFlat.new()
+	hover_style.bg_color = hover_yellow
+	hover_style.content_margin_left = 22
+	hover_style.content_margin_right = 22
+	hover_style.content_margin_top = 6
+	hover_style.content_margin_bottom = 6
+	hover_style.border_width_left = 2
+	hover_style.border_width_right = 2
+	hover_style.border_width_top = 2
+	hover_style.border_width_bottom = 2
+	hover_style.border_color = Color("#FFE81F")
+
+	var pressed_style := StyleBoxFlat.new()
+	pressed_style.bg_color = pressed_yellow
+	pressed_style.content_margin_left = 22
+	pressed_style.content_margin_right = 22
+	pressed_style.content_margin_top = 6
+	pressed_style.content_margin_bottom = 6
+	pressed_style.border_width_left = 2
+	pressed_style.border_width_right = 2
+	pressed_style.border_width_top = 2
+	pressed_style.border_width_bottom = 2
+	pressed_style.border_color = Color("#6F5D00")
+
+	var focus_style := StyleBoxFlat.new()
+	focus_style.bg_color = star_wars_yellow
+	focus_style.content_margin_left = 22
+	focus_style.content_margin_right = 22
+	focus_style.content_margin_top = 6
+	focus_style.content_margin_bottom = 6
+	focus_style.border_width_left = 2
+	focus_style.border_width_right = 2
+	focus_style.border_width_top = 2
+	focus_style.border_width_bottom = 2
+	focus_style.border_color = Color("#FFE81F")
+
+	exit_button.add_theme_stylebox_override("normal", normal_style)
+	exit_button.add_theme_stylebox_override("hover", hover_style)
+	exit_button.add_theme_stylebox_override("pressed", pressed_style)
+	exit_button.add_theme_stylebox_override("focus", focus_style)
 
 
 func _style_start_button() -> void:
@@ -296,11 +376,11 @@ func _setup_enemies() -> void:
 
 	var screen_size := get_viewport_rect().size
 
-	enemy_1.position = Vector2(screen_size.x / 2 - 220, 208)
-	enemy_2.position = Vector2(screen_size.x / 2 + 70, 209)
+	enemy_1.position = Vector2(screen_size.x / 2 - 220, 170)
+	enemy_2.position = Vector2(screen_size.x / 2 + 70, 171)
 
 	# Vihollinen credits-tekstin yläpuolelle
-	enemy_3.position = Vector2(screen_size.x / 2 - 10, 355)
+	enemy_3.position = Vector2(screen_size.x / 2 - 10, 315)
 
 	enemy_1.modulate = Color(1, 1, 1, 0.75)
 	enemy_2.modulate = Color(1, 1, 1, 0.75)

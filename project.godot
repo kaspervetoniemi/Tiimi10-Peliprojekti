@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="Ilari-A-Space-Invaders-Testi"
+config/name="Retro Raiders by Team 10"
 run/main_scene="uid://doif2l5cfuw7c"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
