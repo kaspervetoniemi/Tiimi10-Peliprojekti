@@ -13,7 +13,9 @@ var current_powerup: String = ""
 var powerup_time_left: float = 0.0
 
 var laser_sound = preload("res://sounds/laser.wav")
+var funeral_sound = preload("res://sounds/funeral.wav")
 var audio_player = AudioStreamPlayer.new()
+var death_sound = AudioStreamPlayer.new()
 
 
 func _ready() -> void:
@@ -27,6 +29,10 @@ func _ready() -> void:
 	audio_player.stream = laser_sound
 	audio_player.volume_db = -15.0
 	add_child(audio_player)
+	
+	death_sound.stream = funeral_sound
+	death_sound.volume_db = -20.0
+	add_child(death_sound)
 
 
 func _process(delta: float) -> void:
@@ -127,6 +133,7 @@ func ota_vahinkoa() -> void:
 
 func take_damage(_amount: int = 1) -> void:
 	ota_vahinkoa()
+	death_sound.play()
 
 func set_controls_enabled(enabled: bool) -> void:
 	controls_enabled = enabled
